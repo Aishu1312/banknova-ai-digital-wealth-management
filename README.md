@@ -2,6 +2,8 @@
 
 NOVA is an avatar-based conversational AI wealth advisor built for **IDBI Innovate 2026 — Track 01 (Wealth Advisory Conversational AI, Mobile Banking)**. It lives inside the IDBI mobile app and turns a customer's spending, savings, and investment data into simple, personalized, day-to-day financial guidance — through chat, voice, and proactive nudges.
 
+**🔗 Live App: [https://aishu1312.github.io/banknova-ai-digital-wealth-management/](https://aishu1312.github.io/banknova-ai-digital-wealth-management/)**
+
 Built by **Team BankNova AI**  
 Team Lead: **Aishwarya Lala**
 
@@ -25,8 +27,9 @@ NOVA is a lifelike avatar advisor that lives inside the IDBI mobile app. It cont
 ## 3. Submission Links
 
 - GitHub repo: https://github.com/Aishu1312/banknova-ai-digital-wealth-management
+- Live app: https://aishu1312.github.io/banknova-ai-digital-wealth-management/
 - Demo video: _add link here_
-- Final product / deployed link: _add link here_
+- Final product / deployed link: https://aishu1312.github.io/banknova-ai-digital-wealth-management/
 
 ## 4. Core Features
 
@@ -81,6 +84,10 @@ Four layers: an experience layer (avatar, chat, voice), an AI & orchestration la
 
 ## 11. Deployment Instructions
 
+The live demo at the top of this README is auto-built and published to GitHub Pages by a GitHub Actions workflow (`.github/workflows/deploy.yml`) on every push to `main`.
+
+To run it locally instead:
+
 1. **Clone the repository:**
 
 ```bash
@@ -128,4 +135,3 @@ Deploy the `dist/` folder to any static host (Vercel, Netlify, GitHub Pages). De
 ---
 
 *Built for IDBI Innovate 2026, Track 01, by Team BankNova AI.*
-
