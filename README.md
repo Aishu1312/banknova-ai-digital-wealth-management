@@ -20,7 +20,7 @@ Team Members:
 
 NOVA is a lifelike avatar advisor that lives inside the IDBI mobile app. It continuously reads a customer's transaction history, spending patterns, savings behaviour, and existing investments (with explicit consent), and turns that into conversational, actionable guidance — instead of static dashboards nobody opens.
 
-![Cover](assets/cover.png)
+![Cover](cover.png)
 
 ## 3. Submission Links
 
@@ -39,26 +39,26 @@ NOVA is a lifelike avatar advisor that lives inside the IDBI mobile app. It cont
 - 🔔 **Personalized notifications** — overspend alerts, idle-balance tips, goal milestones, bill reminders
 - 💼 **Portfolio dashboard** — net worth, asset allocation, holdings
 
-![Features](assets/features.png)
+![Features](features.png)
 
 ## 5. App Screens
 
 A working front-end prototype simulates the experience end-to-end: home dashboard, NOVA chat, goals, investments, and alerts — all inside a mobile app frame.
 
-![App Screens](assets/app_screens.png)
-![Wireframes](assets/wireframes.png)
+![App Screens](app_screens.png)
+![Wireframes](wireframes.png)
 
 ## 6. How NOVA Responds — Process Flow
 
 Engage → Aggregate → Analyze → Advise → Act & Learn. Every recommendation is generated from the customer's actual data and feeds back into the model as they act on it.
 
-![Process Flow](assets/process_flow.png)
+![Process Flow](process_flow.png)
 
 ## 7. System Architecture
 
 Four layers: an experience layer (avatar, chat, voice), an AI & orchestration layer (NLU, LLM orchestrator, recommendation engine), an integration layer (secure API gateway to core banking and investment partners), and a data & security layer (consent vault, encryption, RBI/DPDP-aligned audit logs).
 
-![Architecture](assets/architecture.png)
+![Architecture](architecture.png)
 
 ## 8. Tech Stack
 
@@ -77,7 +77,7 @@ Four layers: an experience layer (avatar, chat, voice), an AI & orchestration la
 
 ## 10. Estimated Implementation Cost (Indicative)
 
-![Cost Estimate](assets/cost_estimate.png)
+![Cost Estimate](cost_estimate.png)
 
 ## 11. Deployment Instructions
 
@@ -128,3 +128,4 @@ Deploy the `dist/` folder to any static host (Vercel, Netlify, GitHub Pages). De
 ---
 
 *Built for IDBI Innovate 2026, Track 01, by Team BankNova AI.*
+
