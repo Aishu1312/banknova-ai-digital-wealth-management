@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Global Reset and Font */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif !important;
+}
+
+.stApp {
+    background-color: #0a0a0a !important;
+}
+
+/* Hide standard Streamlit header and footer */
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+footer {
+    display: none !important;
+}
+[data-testid="stViewerBadge"] {
+    display: none !important;
+}
+
+/* Adjust padding */
+.block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 2rem !important;
+    max-width: 95% !important;
+}
+
+/* Metric Cards */
+[data-testid="stMetric"] {
+    background-color: #141416;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+[data-testid="stMetricValue"] {
+    font-size: 1.8rem !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+}
+
+[data-testid="stMetricLabel"] {
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: #888888 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+[data-testid="stMetricDelta"] {
+    font-size: 0.8rem !important;
+}
+
+/* Metric delta colors */
+[data-testid="stMetricDelta"] svg {
+    display: none; /* Hide default arrows, will rely on colors */
+}
+
+/* Custom Containers */
+div[data-testid="stVerticalBlock"] div[style*="border"] {
+    background-color: #141416 !important;
+    border: 1px solid #2a2a2a !important;
+    border-radius: 12px !important;
+}
+
+/* Sidebar styling */
+[data-testid="stSidebar"] {
+    background-color: #0a0a0a !important;
+    border-right: 1px solid #1a1a1a !important;
+}
+
+/* Radio buttons in sidebar (to look like navigation links) */
+[data-testid="stSidebar"] .stRadio label {
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px !important;
+    margin-bottom: 0.2rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease-in-out;
+}
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover {
+    background-color: #1a1a1a !important;
+}
+
+/* Progress bars */
+.stProgress > div > div > div {
+    background-color: #f5b03e !important;
+}
+
+/* Custom utility classes for HTML injection */
+.text-gold {
+    color: #f5b03e !important;
+}
+.text-green {
+    color: #4ade80 !important;
+}
+.text-red {
+    color: #ef4444 !important;
+}
+.text-gray {
+    color: #888888 !important;
+}
+.bg-dark {
+    background-color: #141416 !important;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #2a2a2a;
+}
