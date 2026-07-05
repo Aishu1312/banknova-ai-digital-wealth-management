@@ -79,7 +79,7 @@ if not st.session_state.logged_in:
             st.session_state.logged_in = True
             st.rerun()
     with col3:
-        if st.button("Get started", use_container_width=True, type="primary"):
+        if st.button("Create Account", use_container_width=True, type="primary"):
             st.session_state.logged_in = True
             st.rerun()
             
@@ -130,21 +130,21 @@ if not st.session_state.logged_in:
                 <div style="color: #666; font-size: 12px; margin-bottom: 2rem;">Total wealth &middot; Feb 2026</div>
                 
                 <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; background-color: #1a1a1c;">
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px;">
                         <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">SAVINGS</div>
                         <div style="color: white; font-size: 16px; font-weight: 600;">₹ 3.5L</div>
                     </div>
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; background-color: #1a1a1c;">
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px;">
                         <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">INVESTMENTS</div>
                         <div style="color: white; font-size: 16px; font-weight: 600;">₹ 18.2L</div>
                     </div>
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; background-color: #1a1a1c;">
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px;">
                         <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">EMERGENCY</div>
                         <div style="color: white; font-size: 16px; font-weight: 600;">₹ 3.1L</div>
                     </div>
                 </div>
                 
-                <div style="border: 1px solid #2a2a2a; border-radius: 12px; height: 110px; position: relative; overflow: hidden; background-color: #1a1a1c; margin-bottom: -0.5rem;">
+                <div style="border: 1px solid #2a2a2a; border-radius: 12px; height: 110px; position: relative; overflow: hidden; margin-bottom: -0.5rem;">
                     <svg viewBox="0 0 400 100" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block; position: absolute; bottom: 0; left: 0;">
                         <defs>
                             <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
