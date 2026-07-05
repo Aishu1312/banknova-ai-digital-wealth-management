@@ -388,7 +388,7 @@ else:
         ["📊 Dashboard", "💬 AI Advisor ᴬᴵ", "🎯 Goal Planner", "💼 Portfolio", "💸 Spending", "❤️ Health Score", "✨ AI Recommendations ᴬᴵ", "⚠️ Risk Predictor", "📄 Reports"]
     )
     
-    st.sidebar.markdown("<br>"*15, unsafe_allow_html=True)
+    st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
     st.sidebar.divider()
     st.sidebar.markdown("""
         <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
