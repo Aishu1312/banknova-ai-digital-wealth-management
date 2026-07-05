@@ -104,7 +104,7 @@ if not st.session_state.logged_in:
         
         btn_col1, btn_col2, btn_col3 = st.columns([1.5, 1.5, 2])
         with btn_col1:
-            if st.button("Open free account ➔", type="primary", use_container_width=True):
+            if st.button("Create Account", type="primary", use_container_width=True):
                 st.session_state.logged_in = True
                 st.rerun()
         with btn_col2:
@@ -126,21 +126,21 @@ if not st.session_state.logged_in:
                     <div style="color: #666; font-size: 12px; font-weight: 600; letter-spacing: 1.5px;">PORTFOLIO</div>
                     <div style="color: #4ade80; font-size: 12px; font-weight: 600;">+12.4% YoY</div>
                 </div>
-                <div style="font-size: 2.8rem; color: white; font-weight: 700; margin-bottom: 4px; font-family: monospace, sans-serif;">₹ 24,85,320</div>
+                <div style="font-size: 2.8rem; color: white; font-weight: 700; margin-bottom: 4px; font-family: sans-serif;">₹ 24,85,320</div>
                 <div style="color: #666; font-size: 12px; margin-bottom: 2rem;">Total wealth &middot; Feb 2026</div>
                 
                 <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px;">
-                        <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">SAVINGS</div>
-                        <div style="color: white; font-size: 16px; font-weight: 600;">₹ 3.5L</div>
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px;">
+                        <div style="color: #666; font-size: 10px; margin-bottom: 4px;">SAVINGS</div>
+                        <div style="color: white; font-size: 16px;">₹ 3.5L</div>
                     </div>
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px;">
-                        <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">INVESTMENTS</div>
-                        <div style="color: white; font-size: 16px; font-weight: 600;">₹ 18.2L</div>
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px;">
+                        <div style="color: #666; font-size: 10px; margin-bottom: 4px;">INVESTMENTS</div>
+                        <div style="color: white; font-size: 16px;">₹ 18.2L</div>
                     </div>
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px;">
-                        <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">EMERGENCY</div>
-                        <div style="color: white; font-size: 16px; font-weight: 600;">₹ 3.1L</div>
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px;">
+                        <div style="color: #666; font-size: 10px; margin-bottom: 4px;">EMERGENCY</div>
+                        <div style="color: white; font-size: 16px;">₹ 3.1L</div>
                     </div>
                 </div>
                 
@@ -157,7 +157,7 @@ if not st.session_state.logged_in:
                     </svg>
                 </div>
                 
-                <div style="background-color: #141416; border: 1px solid #555; border-radius: 12px; padding: 1rem; position: absolute; bottom: -20px; left: -20px; z-index: 10; width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.6);">
+                <div style="background-color: #1a1a1c; border: 1px solid #e5e5e5; border-radius: 12px; padding: 1rem; position: absolute; bottom: -20px; left: -20px; z-index: 10; width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.6);">
                     <div style="color: #888; font-size: 11px; font-weight: 600; margin-bottom: 8px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
                         <span style="color: #f5b03e; font-size: 14px;">✨</span> AI INSIGHT
                     </div>
