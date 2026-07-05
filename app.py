@@ -898,7 +898,6 @@ else:
                 <!-- Right Breakdown -->
                 <div style="flex: 2.2; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem;">
                     <div style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 1.5rem;">Pillar breakdown</div>
-                    
                     <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
                         <div style="flex: 1;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
@@ -925,7 +924,6 @@ else:
                             </div>
                         </div>
                     </div>
-                    
                     <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
                         <div style="flex: 1;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
@@ -952,7 +950,6 @@ else:
                             </div>
                         </div>
                     </div>
-                    
                     <div style="display: flex; gap: 2rem;">
                         <div style="flex: 1;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
@@ -979,7 +976,6 @@ else:
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
             
@@ -1004,7 +1000,6 @@ else:
                 <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Actions you can take today</h1>
                 <div style="color: #888; font-size: 14px;">Prioritized, explainable moves that improve your wealth outcome.</div>
             </div>
-            
             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                 <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -1015,7 +1010,6 @@ else:
                     <div style="color: #888; font-size: 13px; margin-bottom: 2rem;">Would push retirement age from 58 to 55 and add ~₹1.4Cr by 60.</div>
                     <div><a href="#" style="color: #f5b03e; font-size: 13px; font-weight: 500; text-decoration: none;">Apply this</a></div>
                 </div>
-                
                 <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RECOMMENDATION</div>
@@ -1026,7 +1020,6 @@ else:
                     <div><a href="#" style="color: #f5b03e; font-size: 13px; font-weight: 500; text-decoration: none;">Apply this</a></div>
                 </div>
             </div>
-            
             <div style="display: flex; gap: 1rem;">
                 <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -1037,7 +1030,6 @@ else:
                     <div style="color: #888; font-size: 13px; margin-bottom: 2rem;">Cover is 3.5x income. Recommended: 10x for dependents.</div>
                     <div><a href="#" style="color: #f5b03e; font-size: 13px; font-weight: 500; text-decoration: none;">Apply this</a></div>
                 </div>
-                
                 <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RECOMMENDATION</div>
