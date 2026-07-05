@@ -561,7 +561,7 @@ else:
                             <span style="color: #4ade80; font-weight: 600;">100</span>
                         </div>
                         <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #4ade80; width: 100%; height: 100%; border-radius: 2px;"></div>
+                            <div style="background-color: #4ade80; width: 100%; height: 4px; border-radius: 2px;"></div>
                         </div>
                     </div>
                     <div style="margin-bottom: 12px;">
@@ -570,7 +570,7 @@ else:
                             <span style="color: #ef4444; font-weight: 600;">24</span>
                         </div>
                         <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #ef4444; width: 24%; height: 100%; border-radius: 2px;"></div>
+                            <div style="background-color: #ef4444; width: 24%; height: 4px; border-radius: 2px;"></div>
                         </div>
                     </div>
                     <div style="margin-bottom: 12px;">
@@ -579,7 +579,7 @@ else:
                             <span style="color: #f5b03e; font-weight: 600;">46</span>
                         </div>
                         <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #f5b03e; width: 46%; height: 100%; border-radius: 2px;"></div>
+                            <div style="background-color: #f5b03e; width: 46%; height: 4px; border-radius: 2px;"></div>
                         </div>
                     </div>
                     <div style="margin-bottom: 12px;">
@@ -588,7 +588,7 @@ else:
                             <span style="color: #ef4444; font-weight: 600;">35</span>
                         </div>
                         <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #ef4444; width: 35%; height: 100%; border-radius: 2px;"></div>
+                            <div style="background-color: #ef4444; width: 35%; height: 4px; border-radius: 2px;"></div>
                         </div>
                     </div>
                 </div>
@@ -903,7 +903,7 @@ else:
                                 <div style="color: #4ade80; font-size: 14px; font-weight: 600;">100</div>
                             </div>
                             <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #4ade80; width: 100%; height: 100%; border-radius: 2px;"></div>
+                                <div style="background-color: #4ade80; width: 100%; height: 4px; border-radius: 2px;"></div>
                             </div>
                         </div>
                         <div style="flex: 1;">
@@ -915,7 +915,7 @@ else:
                                 <div style="color: #ef4444; font-size: 14px; font-weight: 600;">24</div>
                             </div>
                             <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #ef4444; width: 24%; height: 100%; border-radius: 2px;"></div>
+                                <div style="background-color: #ef4444; width: 24%; height: 4px; border-radius: 2px;"></div>
                             </div>
                         </div>
                     </div>
@@ -929,7 +929,7 @@ else:
                                 <div style="color: #f5b03e; font-size: 14px; font-weight: 600;">46</div>
                             </div>
                             <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #f5b03e; width: 46%; height: 100%; border-radius: 2px;"></div>
+                                <div style="background-color: #f5b03e; width: 46%; height: 4px; border-radius: 2px;"></div>
                             </div>
                         </div>
                         <div style="flex: 1;">
@@ -941,7 +941,7 @@ else:
                                 <div style="color: #ef4444; font-size: 14px; font-weight: 600;">35</div>
                             </div>
                             <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #ef4444; width: 35%; height: 100%; border-radius: 2px;"></div>
+                                <div style="background-color: #ef4444; width: 35%; height: 4px; border-radius: 2px;"></div>
                             </div>
                         </div>
                     </div>
@@ -955,7 +955,7 @@ else:
                                 <div style="color: #f5b03e; font-size: 14px; font-weight: 600;">65</div>
                             </div>
                             <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #f5b03e; width: 65%; height: 100%; border-radius: 2px;"></div>
+                                <div style="background-color: #f5b03e; width: 65%; height: 4px; border-radius: 2px;"></div>
                             </div>
                         </div>
                         <div style="flex: 1;">
@@ -967,7 +967,7 @@ else:
                                 <div style="color: #4ade80; font-size: 14px; font-weight: 600;">80</div>
                             </div>
                             <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #4ade80; width: 80%; height: 100%; border-radius: 2px;"></div>
+                                <div style="background-color: #4ade80; width: 80%; height: 4px; border-radius: 2px;"></div>
                             </div>
                         </div>
                     </div>
@@ -1068,7 +1068,7 @@ else:
                         <div style="color: #ef4444; font-size: 10px; font-weight: 600; letter-spacing: 1px;">HIGH</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Overspending Risk</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #ef4444; width: 54%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #ef4444; width: 54%; height: 4px; border-radius: 2px;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #ef4444; font-size: 12px; font-weight: 600;">54<span style="color: #666;">/100</span></div>
@@ -1081,7 +1081,7 @@ else:
                         <div style="color: #4ade80; font-size: 10px; font-weight: 600; letter-spacing: 1px;">LOW</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Debt Risk</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #4ade80; width: 17%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #4ade80; width: 17%; height: 4px; border-radius: 2px;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #4ade80; font-size: 12px; font-weight: 600;">17<span style="color: #666;">/100</span></div>
@@ -1096,7 +1096,7 @@ else:
                         <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px;">MEDIUM</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Emergency Fund Gap</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #f5b03e; width: 54%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #f5b03e; width: 54%; height: 4px; border-radius: 2px;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #f5b03e; font-size: 12px; font-weight: 600;">54<span style="color: #666;">/100</span></div>
@@ -1109,7 +1109,7 @@ else:
                         <div style="color: #4ade80; font-size: 10px; font-weight: 600; letter-spacing: 1px;">LOW</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Goal Failure Risk</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #4ade80; width: 35%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #4ade80; width: 35%; height: 4px; border-radius: 2px;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #4ade80; font-size: 12px; font-weight: 600;">35<span style="color: #666;">/100</span></div>
@@ -1124,7 +1124,7 @@ else:
                         <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px;">MEDIUM</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Investment Risk</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #f5b03e; width: 50%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #f5b03e; width: 50%; height: 4px; border-radius: 2px;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #f5b03e; font-size: 12px; font-weight: 600;">50<span style="color: #666;">/100</span></div>
