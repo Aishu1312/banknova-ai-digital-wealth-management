@@ -127,7 +127,7 @@ if not st.session_state.logged_in:
                     <div style="color: #4ade80; font-size: 12px; font-weight: 600;">+12.4% YoY</div>
                 </div>
                 <div style="font-size: 2.8rem; color: white; font-weight: 700; margin-bottom: 4px; font-family: sans-serif;">₹ 24,85,320</div>
-                <div style="color: #666; font-size: 12px; margin-bottom: 2rem;">Total wealth &middot; Feb 2026</div>
+                <div style="color: #666; font-size: 12px; margin-bottom: 2rem;">Total wealth - Feb 2026</div>
                 
                 <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
                     <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px;">
