@@ -339,9 +339,6 @@ else:
     st.sidebar.markdown("""
         <style>
             /* Custom Sidebar Radio Tabs */
-            [data-testid="stSidebar"] div[role="radiogroup"] > label > div:first-child {
-                display: none !important;
-            }
             [data-testid="stSidebar"] div[role="radiogroup"] > label {
                 padding: 12px 16px !important;
                 border-radius: 8px !important;
