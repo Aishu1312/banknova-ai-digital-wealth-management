@@ -56,7 +56,6 @@ if "auth_mode" not in st.session_state:
 def render_auth_page(mode="signup"):
     st.markdown("""
         <style>
-            [data-testid="stSidebar"] { display: none !important; }
             .block-container { max-width: 1200px !important; padding-top: 4rem !important; }
             div[data-testid="stForm"] {
                 background-color: #111111;
@@ -181,11 +180,10 @@ if not st.session_state.logged_in:
         render_auth_page(st.session_state.auth_mode)
         st.stop()
 
-    # Hide sidebar for landing page
+    # Set layout for landing page
     st.markdown("""
         <style>
-            [data-testid="stSidebar"] { display: none !important; }
-            .block-container { padding-top: 2rem !important; max-width: 1200px !important; }
+            .block-container { max-width: 1200px !important; padding-top: 2rem !important; }
         </style>
     """, unsafe_allow_html=True)
 
@@ -330,7 +328,6 @@ else:
     # Reset layout CSS that might have leaked from the Auth/Landing page
     st.markdown("""
         <style>
-            [data-testid="stSidebar"] { display: block !important; }
             .block-container { max-width: 95% !important; padding-top: 1rem !important; }
         </style>
     """, unsafe_allow_html=True)

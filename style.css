@@ -9,9 +9,9 @@ html, body, [class*="css"] {
     background-color: #0a0a0a !important;
 }
 
-/* Hide standard Streamlit header and footer */
+/* Streamlit header (keep visible for sidebar toggle, but make it transparent) */
 header[data-testid="stHeader"] {
-    display: none !important;
+    background-color: transparent !important;
 }
 footer {
     display: none !important;
