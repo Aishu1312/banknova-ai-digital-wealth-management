@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import plotly.graph_objects as go
 import logging
@@ -613,8 +614,9 @@ else:
         chat_col, sug_col = st.columns([2.5, 1])
         
         with chat_col:
-            st.markdown("""
-                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 500px; display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem;">
+            components.html("""
+                <style>body { margin: 0; padding: 0; font-family: sans-serif; }</style>
+                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 480px; display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem; box-sizing: border-box;">
                     <div>
                         <div style="background-color: #1e1e1e; border: 1px solid #333; padding: 12px 16px; border-radius: 12px; border-top-left-radius: 4px; color: #eee; font-size: 13px; display: inline-block; max-width: 80%;">
                             Namaste! I am your BankNova AI advisor. Ask me anything about your money in ₹.
@@ -627,11 +629,12 @@ else:
                         </button>
                     </div>
                 </div>
-            """, unsafe_allow_html=True)
+            """, height=500)
             
         with sug_col:
-            st.markdown("""
-                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 500px; padding: 1.5rem;">
+            components.html("""
+                <style>body { margin: 0; padding: 0; font-family: sans-serif; }</style>
+                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 480px; padding: 1.5rem; box-sizing: border-box;">
                     <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 1.5rem;">✨ SUGGESTIONS</div>
                     <div onclick="alert('Simulating AI query: How can I retire at 55?')" style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
                         How can I retire at 55?
@@ -646,7 +649,7 @@ else:
                         Best tax-saving instruments for me?
                     </div>
                 </div>
-            """, unsafe_allow_html=True)
+            """, height=500)
             
     elif page == "🎯 Goal Planner":
         st.markdown("""
