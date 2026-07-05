@@ -552,7 +552,6 @@ else:
             st.markdown("""
                 <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; height: 100%;">
                     <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 1rem;">🛡️ HEALTH PILLARS</div>
-                    
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                             <span style="color: white;">Savings</span>
@@ -562,7 +561,6 @@ else:
                             <div style="background-color: #4ade80; width: 100%; height: 100%; border-radius: 2px;"></div>
                         </div>
                     </div>
-                    
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                             <span style="color: white;">Investments</span>
@@ -572,7 +570,6 @@ else:
                             <div style="background-color: #ef4444; width: 24%; height: 100%; border-radius: 2px;"></div>
                         </div>
                     </div>
-                    
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                             <span style="color: white;">Emergency Fund</span>
@@ -582,7 +579,6 @@ else:
                             <div style="background-color: #f5b03e; width: 46%; height: 100%; border-radius: 2px;"></div>
                         </div>
                     </div>
-                    
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                             <span style="color: white;">Insurance</span>
@@ -592,7 +588,6 @@ else:
                             <div style="background-color: #f97316; width: 35%; height: 100%; border-radius: 2px;"></div>
                         </div>
                     </div>
-
                 </div>
             """, unsafe_allow_html=True)
             
