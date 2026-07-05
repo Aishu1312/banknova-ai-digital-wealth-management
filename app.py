@@ -662,29 +662,45 @@ else:
                     // Scroll to bottom
                     history.scrollTop = history.scrollHeight;
                     
-                    // Simulate AI typing delay
-                    setTimeout(function() {
-                        var aiMsgContainer = document.createElement('div');
-                        aiMsgContainer.style.display = 'flex';
-                        aiMsgContainer.style.justifyContent = 'flex-start';
-                        aiMsgContainer.style.marginBottom = '10px';
-                        
-                        var aiMsg = document.createElement('div');
-                        aiMsg.style.backgroundColor = '#1e1e1e';
-                        aiMsg.style.border = '1px solid #333';
-                        aiMsg.style.padding = '12px 16px';
-                        aiMsg.style.borderRadius = '12px';
-                        aiMsg.style.borderTopLeftRadius = '4px';
-                        aiMsg.style.color = '#eee';
-                        aiMsg.style.fontSize = '13px';
-                        aiMsg.style.display = 'inline-block';
-                        aiMsg.style.maxWidth = '80%';
-                        aiMsg.innerHTML = '<span style="color:#f5b03e; font-weight:bold; margin-right:5px;">AI:</span> Frontend Simulation Mode. Wake up backend servers for real financial analysis!';
-                        
-                        aiMsgContainer.appendChild(aiMsg);
-                        history.appendChild(aiMsgContainer);
-                        history.scrollTop = history.scrollHeight;
-                    }, 800);
+                    // Create AI loading message
+                    var aiMsgContainer = document.createElement('div');
+                    aiMsgContainer.style.display = 'flex';
+                    aiMsgContainer.style.justifyContent = 'flex-start';
+                    aiMsgContainer.style.marginBottom = '10px';
+                    
+                    var aiMsg = document.createElement('div');
+                    aiMsg.style.backgroundColor = '#1e1e1e';
+                    aiMsg.style.border = '1px solid #333';
+                    aiMsg.style.padding = '12px 16px';
+                    aiMsg.style.borderRadius = '12px';
+                    aiMsg.style.borderTopLeftRadius = '4px';
+                    aiMsg.style.color = '#eee';
+                    aiMsg.style.fontSize = '13px';
+                    aiMsg.style.display = 'inline-block';
+                    aiMsg.style.maxWidth = '80%';
+                    aiMsg.style.lineHeight = '1.5';
+                    aiMsg.innerHTML = '<span style="color:#f5b03e; font-weight:bold; margin-right:5px;">AI:</span> <i>Thinking...</i>';
+                    
+                    aiMsgContainer.appendChild(aiMsg);
+                    history.appendChild(aiMsgContainer);
+                    history.scrollTop = history.scrollHeight;
+                    
+                    // Fetch real AI response from public endpoint (No API key needed)
+                    var sysPrompt = "You are BankNova AI, a smart, polite, and concise financial advisor for Indian users. Keep answers under 3 short paragraphs. User asks: ";
+                    fetch('https://text.pollinations.ai/' + encodeURIComponent(sysPrompt + text))
+                        .then(response => response.text())
+                        .then(aiText => {
+                            // Format markdown-like text to HTML
+                            var formattedText = aiText
+                                .replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>') // Bold
+                                .replace(/\\n/g, '<br>'); // Newlines
+                            
+                            aiMsg.innerHTML = '<span style="color:#f5b03e; font-weight:bold; margin-right:5px;">AI:</span> ' + formattedText;
+                            history.scrollTop = history.scrollHeight;
+                        })
+                        .catch(err => {
+                            aiMsg.innerHTML = '<span style="color:#ef4444; font-weight:bold; margin-right:5px;">Error:</span> Failed to connect to AI brain.';
+                        });
                 }
             </script>
             
