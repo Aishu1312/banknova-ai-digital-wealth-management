@@ -1042,6 +1042,210 @@ else:
             </div>
         """, unsafe_allow_html=True)
 
+    elif page == "💼 Portfolio":
+        st.markdown("""
+            <div style="margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><span style="font-size: 14px;">📄</span> PORTFOLIO X-RAY</div>
+                        <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Portfolio Analyzer</h1>
+                        <div style="color: #888; font-size: 14px;">Upload your holdings CSV and get an instant diagnostic.</div>
+                    </div>
+                    <div><a href="#" style="color: #f5b03e; font-size: 12px; text-decoration: none; font-weight: 500;">Download sample CSV</a></div>
+                </div>
+            </div>
+            <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
+                <div style="color: #f5b03e; font-size: 32px; margin-bottom: 12px;">☁️↑</div>
+                <div style="color: white; font-size: 18px; font-weight: 700; margin-bottom: 8px;">Drop your portfolio CSV here</div>
+                <div style="color: #666; font-size: 12px;">or click to browse. Columns: <span style="font-family: monospace; color: white;">asset, category, quantity, price</span></div>
+            </div>
+        """, unsafe_allow_html=True)
+    elif page == "⚠️ Risk Predictor":
+        st.markdown("""
+            <div style="margin-bottom: 2rem;">
+                <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><span style="font-size: 14px;">🛡️</span> PREDICTIVE</div>
+                <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Risk Predictor</h1>
+                <div style="color: #888; font-size: 14px;">Forward-looking indicators of your financial risks.</div>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RISK</div>
+                        <div style="color: #ef4444; font-size: 10px; font-weight: 600; letter-spacing: 1px;">HIGH</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Overspending Risk</div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #ef4444; width: 54%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div style="color: #666; font-size: 10px;">Risk score</div>
+                        <div style="color: #ef4444; font-size: 12px; font-weight: 600;">54<span style="color: #666;">/100</span></div>
+                    </div>
+                    <div style="color: #aaa; font-size: 12px;">⚠️ You spend 54% of your income. Aim below 70%.</div>
+                </div>
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RISK</div>
+                        <div style="color: #4ade80; font-size: 10px; font-weight: 600; letter-spacing: 1px;">LOW</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Debt Risk</div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #4ade80; width: 17%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div style="color: #666; font-size: 10px;">Risk score</div>
+                        <div style="color: #4ade80; font-size: 12px; font-weight: 600;">17<span style="color: #666;">/100</span></div>
+                    </div>
+                    <div style="color: #aaa; font-size: 12px;">⚠️ Debt is 17% of annual income. Below 35% is healthy.</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RISK</div>
+                        <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px;">MEDIUM</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Emergency Fund Gap</div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #f5b03e; width: 54%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div style="color: #666; font-size: 10px;">Risk score</div>
+                        <div style="color: #f5b03e; font-size: 12px; font-weight: 600;">54<span style="color: #666;">/100</span></div>
+                    </div>
+                    <div style="color: #aaa; font-size: 12px;">⚠️ Emergency fund covers 2.8 months of expenses. Target 6 months.</div>
+                </div>
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RISK</div>
+                        <div style="color: #4ade80; font-size: 10px; font-weight: 600; letter-spacing: 1px;">LOW</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Goal Failure Risk</div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #4ade80; width: 35%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div style="color: #666; font-size: 10px;">Risk score</div>
+                        <div style="color: #4ade80; font-size: 12px; font-weight: 600;">35<span style="color: #666;">/100</span></div>
+                    </div>
+                    <div style="color: #aaa; font-size: 12px;">⚠️ Current savings pace supports your goals with 65% confidence.</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RISK</div>
+                        <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px;">MEDIUM</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Investment Risk</div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #f5b03e; width: 50%; height: 100%; border-radius: 2px;"></div></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div style="color: #666; font-size: 10px;">Risk score</div>
+                        <div style="color: #f5b03e; font-size: 12px; font-weight: 600;">50<span style="color: #666;">/100</span></div>
+                    </div>
+                    <div style="color: #aaa; font-size: 12px;">⚠️ Portfolio risk is moderate. Consider diversification review.</div>
+                </div>
+                <div style="flex: 1;"></div>
+            </div>
+        """, unsafe_allow_html=True)
+    elif page == "📄 Reports":
+        st.markdown("""
+            <div style="margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><span style="font-size: 14px;">📄</span> PORTABLE PORTFOLIO</div>
+                        <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Financial Report</h1>
+                        <div style="color: #888; font-size: 14px;">One-page snapshot of everything BankNova knows about your wealth.</div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button style="background-color: #f5b03e; color: black; border: none; border-radius: 6px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">🖨️ Print / Save PDF</button>
+                        <button style="background-color: transparent; color: white; border: 1px solid #333; border-radius: 6px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">📥 JSON</button>
+                    </div>
+                </div>
+            </div>
+            <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; border-bottom: 1px solid #2a2a2a; padding-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="background: linear-gradient(135deg, #fcd34d, #f59e0b); color: black; font-weight: 800; font-size: 18px; width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; border-radius: 8px;">B</div>
+                        <div style="line-height: 1.2;">
+                            <div style="color: white; font-size: 16px; font-weight: 700;">BankNova AI</div>
+                            <div style="color: #666; font-size: 12px;">Wealth Intelligence Report</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right; line-height: 1.5;">
+                        <div style="color: #666; font-size: 10px;">Generated for</div>
+                        <div style="color: white; font-size: 12px; font-weight: 600;">aaishwaryalala13</div>
+                        <div style="color: #888; font-size: 12px;">aaishwaryalala13@gmail.com</div>
+                        <div style="color: #888; font-size: 12px;">5/7/2026, 7:47:36 pm</div>
+                    </div>
+                </div>
+                <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 1.5rem;">WEALTH SUMMARY</div>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Total Wealth</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">Rs 13.80 L</div>
+                    </div>
+                    <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Savings</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">Rs 3.50 L</div>
+                    </div>
+                    <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Investments</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">Rs 8.50 L</div>
+                    </div>
+                    <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Emergency Fund</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">Rs 1.80 L</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-bottom: 3rem;">
+                    <div style="flex: 1;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Monthly Income</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">Rs 1.20 L</div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Monthly Expenses</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">Rs 65.0K</div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Monthly Savings</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">Rs 55.0K</div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Savings Rate</div>
+                        <div style="color: white; font-size: 18px; font-weight: 600;">45.8%</div>
+                    </div>
+                </div>
+                <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 1rem;">FINANCIAL HEALTH SCORE</div>
+                <div style="color: #f5b03e; font-size: 42px; font-weight: 700; line-height: 1; margin-bottom: 2rem;">64<span style="color: #666; font-size: 16px;"> /100</span></div>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Savings</div>
+                        <div style="color: white; font-size: 14px; font-weight: 600;">100/100</div>
+                    </div>
+                    <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Investments</div>
+                        <div style="color: white; font-size: 14px; font-weight: 600;">24/100</div>
+                    </div>
+                    <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Emergency Fund</div>
+                        <div style="color: white; font-size: 14px; font-weight: 600;">46/100</div>
+                    </div>
+                    <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Insurance</div>
+                        <div style="color: white; font-size: 14px; font-weight: 600;">35/100</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-bottom: 3rem;">
+                    <div style="flex: 1;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Debt</div>
+                        <div style="color: white; font-size: 14px; font-weight: 600;">65/100</div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Budgeting</div>
+                        <div style="color: white; font-size: 14px; font-weight: 600;">100/100</div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Credit Behaviour</div>
+                        <div style="color: white; font-size: 14px; font-weight: 600;">80/100</div>
+                    </div>
+                    <div style="flex: 1;"></div>
+                </div>
+                <div style="color: #666; font-size: 10px; line-height: 1.5; font-style: italic;">Disclaimer: This report is generated for educational purposes only and does not constitute licensed investment advice. All computations use user-provided data and standard financial models. Consult a SEBI-registered advisor for personalized recommendations.</div>
+            </div>
+        """, unsafe_allow_html=True)
     else:
         st.header(f"Page: {page}")
         st.info("This section is under construction.")
