@@ -599,14 +599,164 @@ else:
             </div>
         """, unsafe_allow_html=True)
 
-    # Note: Other pages (AI Advisor, Goal Planner, etc.) can be populated similarly 
-    # to the old functionality if needed, but the primary task was to overhaul the visual layout.
     elif page == "💬 AI Advisor ᴬᴵ":
-        st.header("💬 AI Advisor")
-        st.info("AI Advisor interface goes here.")
+        st.markdown("""
+            <div style="margin-bottom: 2rem;">
+                <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">🤖</span> CONVERSATIONAL AI
+                </div>
+                <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">AI Advisor</h1>
+                <div style="color: #888; font-size: 14px;">Chat with your INR-native, explainable AI banker.</div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        chat_col, sug_col = st.columns([2.5, 1])
+        
+        with chat_col:
+            st.markdown("""
+                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 500px; display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem;">
+                    <div>
+                        <div style="background-color: #1e1e1e; border: 1px solid #333; padding: 12px 16px; border-radius: 12px; border-top-left-radius: 4px; color: #eee; font-size: 13px; display: inline-block; max-width: 80%;">
+                            Namaste! I am your BankNova AI advisor. Ask me anything about your money in ₹.
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; align-items: center; border: 1px solid #333; padding: 4px; border-radius: 8px; background-color: #0a0a0a;">
+                        <input type="text" placeholder="Ask about SIPs, taxes, retirement..." style="flex: 1; background: transparent; border: none; color: white; padding: 8px 12px; outline: none; font-size: 13px;">
+                        <button style="background-color: #f5b03e; color: black; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;">
+                            ➤
+                        </button>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with sug_col:
+            st.markdown("""
+                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 500px; padding: 1.5rem;">
+                    <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 1.5rem;">✨ SUGGESTIONS</div>
+                    
+                    <div style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
+                        How can I retire at 55?
+                    </div>
+                    <div style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
+                        Is my portfolio too risky?
+                    </div>
+                    <div style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
+                        How much term insurance do I need?
+                    </div>
+                    <div style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
+                        Best tax-saving instruments for me?
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+            
     elif page == "🎯 Goal Planner":
-        st.header("🎯 Goal Planner")
-        st.info("Goal Planner interface goes here.")
+        st.markdown("""
+            <div style="margin-bottom: 2rem;">
+                <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">🧭</span> LIFE GOALS
+                </div>
+                <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Goal Planner</h1>
+                <div style="color: #888; font-size: 14px;">Inflation-adjusted plans for every life milestone.</div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # Grid of Goals
+        g1, g2 = st.columns(2)
+        with g1:
+            st.markdown("""
+                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">GOAL</span>
+                        <span style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">IN</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <span style="color: white; font-size: 16px; font-weight: 600;">Retirement</span>
+                        <span style="color: white; font-size: 14px; font-weight: 500;">25 yrs</span>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="color: white; font-size: 24px; font-weight: 600;">Rs 42.00L</span>
+                        <span style="color: #666; font-size: 12px; margin-left: 6px;">of Rs 3.00Cr</span>
+                    </div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;">
+                        <div style="background-color: #f5b03e; width: 14%; height: 100%; border-radius: 2px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666; font-size: 11px;">14% complete</span>
+                        <span style="color: #888; font-size: 11px;">Suggested SIP: <span style="color: white; font-weight: 600;">Rs 1,00,000</span></span>
+                    </div>
+                </div>
+                
+                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#2a2a2a'">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">GOAL</span>
+                        <span style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">IN</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <span style="color: white; font-size: 16px; font-weight: 600;">Child Education</span>
+                        <span style="color: white; font-size: 14px; font-weight: 500;">12 yrs</span>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="color: white; font-size: 24px; font-weight: 600;">Rs 9.00L</span>
+                        <span style="color: #666; font-size: 12px; margin-left: 6px;">of Rs 80.00L</span>
+                    </div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;">
+                        <div style="background-color: #3b82f6; width: 11%; height: 100%; border-radius: 2px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666; font-size: 11px;">11% complete</span>
+                        <span style="color: #888; font-size: 11px;">Suggested SIP: <span style="color: white; font-weight: 600;">Rs 55,600</span></span>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with g2:
+            st.markdown("""
+                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#4ade80'" onmouseout="this.style.borderColor='#2a2a2a'">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">GOAL</span>
+                        <span style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">IN</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <span style="color: white; font-size: 16px; font-weight: 600;">Home Down Payment</span>
+                        <span style="color: white; font-size: 14px; font-weight: 500;">5 yrs</span>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="color: white; font-size: 24px; font-weight: 600;">Rs 16.50L</span>
+                        <span style="color: #666; font-size: 12px; margin-left: 6px;">of Rs 45.00L</span>
+                    </div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;">
+                        <div style="background-color: #4ade80; width: 37%; height: 100%; border-radius: 2px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666; font-size: 11px;">37% complete</span>
+                        <span style="color: #888; font-size: 11px;">Suggested SIP: <span style="color: white; font-weight: 600;">Rs 75,000</span></span>
+                    </div>
+                </div>
+                
+                <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#a855f7'" onmouseout="this.style.borderColor='#2a2a2a'">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">GOAL</span>
+                        <span style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">IN</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <span style="color: white; font-size: 16px; font-weight: 600;">World Trip</span>
+                        <span style="color: white; font-size: 14px; font-weight: 500;">3 yrs</span>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="color: white; font-size: 24px; font-weight: 600;">Rs 2.20L</span>
+                        <span style="color: #666; font-size: 12px; margin-left: 6px;">of Rs 8.00L</span>
+                    </div>
+                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;">
+                        <div style="background-color: #a855f7; width: 28%; height: 100%; border-radius: 2px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666; font-size: 11px;">28% complete</span>
+                        <span style="color: #888; font-size: 11px;">Suggested SIP: <span style="color: white; font-weight: 600;">Rs 22,200</span></span>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
     else:
         st.header(f"Page: {page}")
         st.info("This section is under construction.")
