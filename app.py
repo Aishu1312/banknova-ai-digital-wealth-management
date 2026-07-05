@@ -848,6 +848,208 @@ else:
                 </div>
             """, unsafe_allow_html=True)
 
+    elif page == "💸 Spending":
+        st.markdown("""
+            <div style="margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 14px;">📄</span> BEHAVIOUR INTELLIGENCE
+                        </div>
+                        <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Spending Analyzer</h1>
+                        <div style="color: #888; font-size: 14px;">Upload bank statement CSV. We categorize, chart & find leaks.</div>
+                    </div>
+                    <div>
+                        <a href="#" style="color: #f5b03e; font-size: 12px; text-decoration: none; font-weight: 500;">Download sample CSV</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
+                <div style="color: #f5b03e; font-size: 32px; margin-bottom: 12px;">☁️↑</div>
+                <div style="color: white; font-size: 18px; font-weight: 700; margin-bottom: 8px;">Drop bank statement CSV here</div>
+                <div style="color: #666; font-size: 12px;">Columns: <span style="font-family: monospace; color: #888;">date, description, amount</span></div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+    elif page == "❤️ Health Score":
+        st.markdown("""
+            <div style="margin-bottom: 2rem;">
+                <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">❤️</span> 7-PILLAR MODEL
+                </div>
+                <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Financial Health Score</h1>
+                <div style="color: #888; font-size: 14px;">Your composite wellness rating across the pillars of personal finance.</div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <!-- Left Score Circle -->
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px;">
+                    <div style="position: relative; width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(#f5b03e 0% 64%, #333 64% 100%); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <div style="width: 150px; height: 150px; background-color: #141416; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="color: #f5b03e; font-size: 14px; margin-bottom: 4px;">❤️</div>
+                            <div style="color: white; font-size: 42px; font-weight: 700; line-height: 1;">64</div>
+                            <div style="color: #666; font-size: 12px;">out of 100</div>
+                        </div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 500;">Good</div>
+                </div>
+                
+                <!-- Right Breakdown -->
+                <div style="flex: 2.2; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem;">
+                    <div style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 1.5rem;">Pillar breakdown</div>
+                    
+                    <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
+                                <div>
+                                    <div style="color: white; font-size: 14px; font-weight: 500;">Savings</div>
+                                    <div style="color: #666; font-size: 10px;">Target benchmarks for Indian households.</div>
+                                </div>
+                                <div style="color: #4ade80; font-size: 14px; font-weight: 600;">100</div>
+                            </div>
+                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
+                                <div style="background-color: #4ade80; width: 100%; height: 100%; border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
+                                <div>
+                                    <div style="color: white; font-size: 14px; font-weight: 500;">Investments</div>
+                                    <div style="color: #666; font-size: 10px;">Target benchmarks for Indian households.</div>
+                                </div>
+                                <div style="color: #ef4444; font-size: 14px; font-weight: 600;">24</div>
+                            </div>
+                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
+                                <div style="background-color: #ef4444; width: 24%; height: 100%; border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
+                                <div>
+                                    <div style="color: white; font-size: 14px; font-weight: 500;">Emergency Fund</div>
+                                    <div style="color: #666; font-size: 10px;">Target benchmarks for Indian households.</div>
+                                </div>
+                                <div style="color: #f5b03e; font-size: 14px; font-weight: 600;">46</div>
+                            </div>
+                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
+                                <div style="background-color: #f5b03e; width: 46%; height: 100%; border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
+                                <div>
+                                    <div style="color: white; font-size: 14px; font-weight: 500;">Insurance</div>
+                                    <div style="color: #666; font-size: 10px;">Target benchmarks for Indian households.</div>
+                                </div>
+                                <div style="color: #ef4444; font-size: 14px; font-weight: 600;">35</div>
+                            </div>
+                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
+                                <div style="background-color: #ef4444; width: 35%; height: 100%; border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 2rem;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
+                                <div>
+                                    <div style="color: white; font-size: 14px; font-weight: 500;">Debt</div>
+                                    <div style="color: #666; font-size: 10px;">Target benchmarks for Indian households.</div>
+                                </div>
+                                <div style="color: #f5b03e; font-size: 14px; font-weight: 600;">65</div>
+                            </div>
+                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
+                                <div style="background-color: #f5b03e; width: 65%; height: 100%; border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
+                                <div>
+                                    <div style="color: white; font-size: 14px; font-weight: 500;">Credit Behaviour</div>
+                                    <div style="color: #666; font-size: 10px;">Target benchmarks for Indian households.</div>
+                                </div>
+                                <div style="color: #4ade80; font-size: 14px; font-weight: 600;">80</div>
+                            </div>
+                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
+                                <div style="background-color: #4ade80; width: 80%; height: 100%; border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem;">
+                <div style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 1rem;">What this means</div>
+                <div style="color: #888; font-size: 13px; line-height: 1.6; margin-bottom: 0.5rem;">
+                    Your financial health score is a weighted composite across 7 pillars, each measured against ideal benchmarks for the Indian household.<br>
+                    Scores above <span style="color: #4ade80; font-weight: 600;">70</span> indicate excellent financial resilience. Scores between <span style="color: #f5b03e; font-weight: 600;">40-70</span> suggest room to strengthen specific pillars. Below <span style="color: #ef4444; font-weight: 600;">40</span> warrants immediate action.
+                </div>
+                <div style="color: #aaa; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                    <span style="color: #f5b03e;">💡</span> Head to <a href="#" style="color: #f5b03e; text-decoration: underline;">AI Advisor</a> to ask personalized questions about improving any pillar.
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+    elif page == "✨ AI Recommendations ᴬᴵ":
+        st.markdown("""
+            <div style="margin-bottom: 2rem;">
+                <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">✨</span> AI RECOMMENDATIONS
+                </div>
+                <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Actions you can take today</h1>
+                <div style="color: #888; font-size: 14px;">Prioritized, explainable moves that improve your wealth outcome.</div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RECOMMENDATION</div>
+                        <div style="color: #ef4444; font-size: 10px; font-weight: 600; letter-spacing: 1px;">HIGH</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 12px;">Increase SIP by ₹5,000</div>
+                    <div style="color: #888; font-size: 13px; margin-bottom: 2rem;">Would push retirement age from 58 to 55 and add ~₹1.4Cr by 60.</div>
+                    <div><a href="#" style="color: #f5b03e; font-size: 13px; font-weight: 500; text-decoration: none;">Apply this</a></div>
+                </div>
+                
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RECOMMENDATION</div>
+                        <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px;">MEDIUM</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 12px;">Move idle savings to liquid fund</div>
+                    <div style="color: #888; font-size: 13px; margin-bottom: 2rem;">₹1.2L parked at 3% could earn ~6.8% in a liquid fund.</div>
+                    <div><a href="#" style="color: #f5b03e; font-size: 13px; font-weight: 500; text-decoration: none;">Apply this</a></div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RECOMMENDATION</div>
+                        <div style="color: #ef4444; font-size: 10px; font-weight: 600; letter-spacing: 1px;">HIGH</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 12px;">Term insurance top-up</div>
+                    <div style="color: #888; font-size: 13px; margin-bottom: 2rem;">Cover is 3.5x income. Recommended: 10x for dependents.</div>
+                    <div><a href="#" style="color: #f5b03e; font-size: 13px; font-weight: 500; text-decoration: none;">Apply this</a></div>
+                </div>
+                
+                <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px;">RECOMMENDATION</div>
+                        <div style="color: #4ade80; font-size: 10px; font-weight: 600; letter-spacing: 1px;">LOW</div>
+                    </div>
+                    <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 12px;">Refinance vehicle loan</div>
+                    <div style="color: #888; font-size: 13px; margin-bottom: 2rem;">Current rate 11.2% vs market 9.4% — save ~₹18k over tenure.</div>
+                    <div><a href="#" style="color: #f5b03e; font-size: 13px; font-weight: 500; text-decoration: none;">Apply this</a></div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
     else:
         st.header(f"Page: {page}")
         st.info("This section is under construction.")
