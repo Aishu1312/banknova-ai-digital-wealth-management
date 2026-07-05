@@ -57,14 +57,21 @@ def render_auth_page(mode="signup"):
     st.markdown("""
         <style>
             [data-testid="stSidebar"] { display: none !important; }
-            .block-container { max-width: 800px !important; padding-top: 4rem !important; }
+            .block-container { max-width: 1200px !important; padding-top: 4rem !important; }
             div[data-testid="stForm"] {
                 background-color: #111111;
                 border: 1px solid #222;
                 border-radius: 20px;
                 padding: 2.5rem 2.5rem;
                 box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-                margin-bottom: 1rem;
+                margin: 0 auto 1rem auto;
+                max-width: 420px;
+            }
+            .auth-link-container {
+                display: flex;
+                justify-content: center;
+                max-width: 420px;
+                margin: 0 auto;
             }
             div[data-testid="stForm"] label p {
                 font-size: 11px !important;
@@ -128,44 +135,43 @@ def render_auth_page(mode="signup"):
         </div>
     """, unsafe_allow_html=True)
     
-    _, col, _ = st.columns([1, 1.3, 1])
-    
-    with col:
-        with st.form("auth_form", clear_on_submit=False):
-            if mode == "signup":
-                st.markdown("<h1 style='color: white; font-size: 28px; font-weight: 800; margin-bottom: 5px; line-height: 1;'>Create account</h1>", unsafe_allow_html=True)
-                st.markdown("<p style='color: #888; font-size: 14px; margin-bottom: 25px;'>30 seconds. No card required.</p>", unsafe_allow_html=True)
-                
-                st.text_input("FULL NAME", placeholder="Aarav Sharma")
-                st.text_input("EMAIL", placeholder="you@example.com")
-                st.text_input("PASSWORD", placeholder="At least 6 characters", type="password")
-                
-                submitted = st.form_submit_button("Create account →")
-                if submitted:
-                    st.session_state.logged_in = True
-                    st.session_state.auth_mode = None
-                    st.rerun()
-            else:
-                st.markdown("<h1 style='color: white; font-size: 28px; font-weight: 800; margin-bottom: 5px; line-height: 1;'>Welcome back</h1>", unsafe_allow_html=True)
-                st.markdown("<p style='color: #888; font-size: 14px; margin-bottom: 25px;'>Sign in to your wealth OS.</p>", unsafe_allow_html=True)
-                
-                st.text_input("EMAIL", placeholder="you@example.com")
-                st.text_input("PASSWORD", placeholder="Your password", type="password")
-                
-                submitted = st.form_submit_button("Sign in →")
-                if submitted:
-                    st.session_state.logged_in = True
-                    st.session_state.auth_mode = None
-                    st.rerun()
-                    
+    with st.form("auth_form", clear_on_submit=False):
         if mode == "signup":
-            if st.button("Already have an account? Sign in", use_container_width=True):
-                st.session_state.auth_mode = "login"
+            st.markdown("<h1 style='color: white; font-size: 28px; font-weight: 800; margin-bottom: 5px; line-height: 1;'>Create account</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #888; font-size: 14px; margin-bottom: 25px;'>30 seconds. No card required.</p>", unsafe_allow_html=True)
+            
+            st.text_input("FULL NAME", placeholder="Aarav Sharma")
+            st.text_input("EMAIL", placeholder="you@example.com")
+            st.text_input("PASSWORD", placeholder="At least 6 characters", type="password")
+            
+            submitted = st.form_submit_button("Create account →")
+            if submitted:
+                st.session_state.logged_in = True
+                st.session_state.auth_mode = None
                 st.rerun()
         else:
-            if st.button("New to BankNova? Create account", use_container_width=True):
-                st.session_state.auth_mode = "signup"
+            st.markdown("<h1 style='color: white; font-size: 28px; font-weight: 800; margin-bottom: 5px; line-height: 1;'>Welcome back</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #888; font-size: 14px; margin-bottom: 25px;'>Sign in to your wealth OS.</p>", unsafe_allow_html=True)
+            
+            st.text_input("EMAIL", placeholder="you@example.com")
+            st.text_input("PASSWORD", placeholder="Your password", type="password")
+            
+            submitted = st.form_submit_button("Sign in →")
+            if submitted:
+                st.session_state.logged_in = True
+                st.session_state.auth_mode = None
                 st.rerun()
+                
+    st.markdown('<div class="auth-link-container">', unsafe_allow_html=True)
+    if mode == "signup":
+        if st.button("Already have an account? Sign in", use_container_width=True):
+            st.session_state.auth_mode = "login"
+            st.rerun()
+    else:
+        if st.button("New to BankNova? Create account", use_container_width=True):
+            st.session_state.auth_mode = "signup"
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
 # 1. LANDING PAGE
@@ -323,6 +329,48 @@ if not st.session_state.logged_in:
 else:
     # Sidebar
     st.sidebar.markdown("""
+        <style>
+            /* Custom Sidebar Radio Tabs */
+            [data-testid="stSidebar"] div[role="radiogroup"] > label > div:first-child {
+                display: none !important;
+            }
+            [data-testid="stSidebar"] div[role="radiogroup"] > label {
+                padding: 12px 16px !important;
+                border-radius: 8px !important;
+                margin-bottom: 4px !important;
+                background-color: transparent !important;
+                color: #888 !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                cursor: pointer !important;
+                transition: all 0.2s !important;
+            }
+            [data-testid="stSidebar"] div[role="radiogroup"] > label:hover {
+                background-color: rgba(255,255,255,0.05) !important;
+                color: white !important;
+            }
+            [data-testid="stSidebar"] div[role="radiogroup"] > label[data-checked="true"] {
+                background-color: #1a1a1c !important;
+                color: white !important;
+                border-left: 3px solid #f5b03e !important;
+                border-top-left-radius: 0 !important;
+                border-bottom-left-radius: 0 !important;
+            }
+            /* KPI Card Hover styling */
+            .kpi-card {
+                background-color: #141416;
+                border: 1px solid #2a2a2a;
+                border-radius: 12px;
+                padding: 1.2rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .kpi-card:hover {
+                border-color: #f5b03e;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(245,176,62,0.1);
+            }
+        </style>
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 2rem;">
             <div style="background: linear-gradient(135deg, #fcd34d, #f59e0b); color: black; font-weight: 800; font-size: 20px; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 10px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">B</div>
             <div style="line-height: 1.1;">
@@ -334,7 +382,7 @@ else:
     
     page = st.sidebar.radio(
         "",
-        ["Dashboard", "AI Advisor", "Goal Planner", "Portfolio", "Spending", "Health Score", "AI Recommendations", "Risk Predictor", "Reports"]
+        ["📊 Dashboard", "💬 AI Advisor ᴬᴵ", "🎯 Goal Planner", "💼 Portfolio", "💸 Spending", "❤️ Health Score", "✨ AI Recommendations ᴬᴵ", "⚠️ Risk Predictor", "📄 Reports"]
     )
     
     st.sidebar.markdown("<br>"*15, unsafe_allow_html=True)
@@ -347,11 +395,11 @@ else:
                 <div style="color: #666; font-size: 10px;">aaishwaryalala13@gmail.com</div>
             </div>
         </div>
-        <div style="margin-top: 10px; color: #888; font-size: 12px; cursor: pointer;">↪ Log out</div>
+        <div style="margin-top: 10px; color: #888; font-size: 12px; cursor: pointer;" onclick="alert('Logging out...')">↪ Log out</div>
     """, unsafe_allow_html=True)
     
     # ---------------- DASHBOARD (HOME) ----------------
-    if page == "Dashboard":
+    if page == "📊 Dashboard":
         # Header Row
         head_col1, head_col2 = st.columns([3, 1])
         with head_col1:
@@ -373,10 +421,54 @@ else:
 
         # Metrics Row
         m1, m2, m3, m4 = st.columns(4)
-        m1.metric("TOTAL WEALTH", "₹13.80 L", "+12.4%")
-        m2.metric("SAVINGS", "₹3.50 L", "+3.2%")
-        m3.metric("INVESTMENTS", "₹8.50 L", "+8.7%")
-        m4.metric("MONTHLY EXPENSES", "₹65.0K", "-2.1%")
+        
+        with m1:
+            st.markdown("""
+                <div class="kpi-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <div style="color: #f5b03e; font-size: 16px;">💼</div>
+                        <div style="color: #4ade80; font-size: 12px; font-weight: 600;">↗ +12.4%</div>
+                    </div>
+                    <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase;">TOTAL WEALTH</div>
+                    <div style="color: white; font-size: 24px; font-weight: 700;">₹13.80 L</div>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with m2:
+            st.markdown("""
+                <div class="kpi-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <div style="color: #f5b03e; font-size: 16px;">🐷</div>
+                        <div style="color: #4ade80; font-size: 12px; font-weight: 600;">↗ +3.2%</div>
+                    </div>
+                    <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase;">SAVINGS</div>
+                    <div style="color: white; font-size: 24px; font-weight: 700;">₹3.50 L</div>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with m3:
+            st.markdown("""
+                <div class="kpi-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <div style="color: #f5b03e; font-size: 16px;">📈</div>
+                        <div style="color: #4ade80; font-size: 12px; font-weight: 600;">↗ +8.7%</div>
+                    </div>
+                    <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase;">INVESTMENTS</div>
+                    <div style="color: white; font-size: 24px; font-weight: 700;">₹8.50 L</div>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with m4:
+            st.markdown("""
+                <div class="kpi-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <div style="color: #f5b03e; font-size: 16px;">📉</div>
+                        <div style="color: #ef4444; font-size: 12px; font-weight: 600;">↘ -2.1%</div>
+                    </div>
+                    <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase;">MONTHLY EXPENSES</div>
+                    <div style="color: white; font-size: 24px; font-weight: 700;">₹65.0K</div>
+                </div>
+            """, unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -505,17 +597,17 @@ else:
             """, unsafe_allow_html=True)
             
         st.markdown("""
-            <div style="text-align: center; margin-top: 20px; padding: 10px; background-color: #1a1a1c; border-radius: 20px; font-size: 12px; color: white; display: inline-block; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); border: 1px solid #333;">
-                Frontend Preview Only. Please wake servers to enable backend functionality. <span style="color: #4ade80; margin-left: 10px; cursor: pointer;">Wake up servers</span>
+            <div style="text-align: center; margin-top: 20px; padding: 10px; background-color: #1a1a1c; border-radius: 20px; font-size: 12px; color: white; display: inline-block; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); border: 1px solid #333; z-index: 9999; box-shadow: 0 5px 20px rgba(0,0,0,0.5);">
+                Frontend Preview Only. Please wake servers to enable backend functionality. <span style="color: #4ade80; margin-left: 10px; cursor: pointer; text-decoration: underline;" onclick="alert('Waking up BankNova AI backend servers... (Simulation)')">Wake up servers</span>
             </div>
         """, unsafe_allow_html=True)
 
     # Note: Other pages (AI Advisor, Goal Planner, etc.) can be populated similarly 
     # to the old functionality if needed, but the primary task was to overhaul the visual layout.
-    elif page == "AI Advisor":
+    elif page == "💬 AI Advisor ᴬᴵ":
         st.header("💬 AI Advisor")
         st.info("AI Advisor interface goes here.")
-    elif page == "Goal Planner":
+    elif page == "🎯 Goal Planner":
         st.header("🎯 Goal Planner")
         st.info("Goal Planner interface goes here.")
     else:
