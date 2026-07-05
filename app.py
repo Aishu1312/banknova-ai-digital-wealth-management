@@ -1,6 +1,13 @@
 import streamlit as st
+
+import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import logging
+
+# Configure basic logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
 
 from data import (
     category_breakdown,
@@ -31,11 +38,18 @@ if "quiz_step" not in st.session_state:
     st.session_state.quiz_step = 0
 if "quiz_score" not in st.session_state:
     st.session_state.quiz_score = 0
+if "goals" not in st.session_state:
+    import copy
+    st.session_state.goals = copy.deepcopy(goals)
 
 st.markdown(
     """
     <style>
     .stApp { background-color: #0a0a0a; }
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    [data-testid="stViewerBadge"] {display: none;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -77,7 +91,7 @@ if page == "🏠 Home":
         font_color="#f5f5f5",
         yaxis_title="₹ Lakhs",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)
 
     st.subheader("Holdings breakdown")
     for h in portfolio_holdings:
@@ -102,7 +116,7 @@ elif page == "💬 NOVA Chat":
     st.write("")
     chip_cols = st.columns(len(suggestion_chips))
     for i, chip in enumerate(suggestion_chips):
-        if chip_cols[i].button(chip, key=f"chip_{i}", use_container_width=True):
+        if chip_cols[i].button(chip, key=f"chip_{i}"):
             st.session_state.chat_history.append({"role": "user", "text": chip})
             st.session_state.chat_history.append(
                 {"role": "assistant", "text": get_response(chip, st.session_state.risk)}
@@ -136,11 +150,11 @@ elif page == "📊 Spend Analysis":
         plot_bgcolor="rgba(0,0,0,0)",
         font_color="#f5f5f5",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)
 
     st.subheader("By category")
     for cat, amt in breakdown.items():
-        pct = amt / total
+        pct = min(1.0, float(amt / total if total > 0 else 0))
         st.write(f"**{cat}** — ₹{amt:,}")
         st.progress(pct)
 
@@ -149,7 +163,7 @@ elif page == "📊 Spend Analysis":
     df["amount"] = df["amount"].apply(lambda a: f"-₹{a:,}")
     st.dataframe(df.rename(columns={
         "date": "Date", "merchant": "Merchant", "category": "Category", "amount": "Amount",
-    }), hide_index=True, use_container_width=True)
+    }), hide_index=True)
 
 # ---------------- INVEST ----------------
 elif page == "📈 Invest":
@@ -208,7 +222,7 @@ elif page == "📈 Invest":
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         font_color="#f5f5f5", showlegend=False, xaxis=dict(visible=False), yaxis=dict(visible=False),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)
     st.write(f"🟡 Equity {alloc['equity']}% · 🔵 Debt {alloc['debt']}% · 🟢 Gold {alloc['gold']}%")
     st.caption(alloc["description"])
 
@@ -229,20 +243,24 @@ elif page == "🎯 Goals":
         target = st.number_input("Target amount (₹)", min_value=0, step=10000)
         years = st.number_input("Years to reach it", min_value=1, step=1, value=5)
         if st.button("Create goal") and name and target:
-            monthly_sip = round(target / (years * 12))
-            goals.append({
-                "id": f"custom-{len(goals)}",
+            monthly_sip = round(target / (years * 12)) if years > 0 else 0
+            new_goal = {
+                "id": f"custom-{len(st.session_state.goals)}",
                 "name": name,
                 "type": "Custom",
                 "target": target,
                 "saved": 0,
                 "target_year": 2026 + years,
                 "monthly_sip": monthly_sip,
-            })
+            }
+            st.session_state.goals.append(new_goal)
+            logger.info(f"User created a new goal: {new_goal['name']} with target ₹{new_goal['target']}")
             st.success(f"Goal created! Suggested SIP: ₹{monthly_sip:,}/mo")
 
-    for g in goals:
-        pct = min(100, round(g["saved"] / g["target"] * 100))
+    for g in st.session_state.goals:
+        target_amt = g.get("target", 0)
+        saved_amt = g.get("saved", 0)
+        pct = min(100, round(saved_amt / target_amt * 100)) if target_amt > 0 else 0
         status = "🟢 On track" if pct >= 20 else "🔴 Needs boost"
         with st.container(border=True):
             c1, c2 = st.columns([3, 1])
@@ -262,4 +280,4 @@ elif page == "🔔 Alerts":
             c1, c2 = st.columns([5, 1])
             c1.markdown(f"{icon_map.get(n['type'], '⚪')} **{n['title']}**")
             c2.caption(n["time"])
-            st.write(n["body"])
+

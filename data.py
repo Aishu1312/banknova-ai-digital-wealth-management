@@ -1,9 +1,10 @@
 """Mock data for BankNova AI — ported from the React prototype's data/mockData.ts."""
 
+from typing import List, Dict, Any, Union
 from datetime import date
 
 # ---- Portfolio holdings ----
-portfolio_holdings = [
+portfolio_holdings: List[Dict[str, Union[str, int, float]]] = [
     {"name": "Equity Mutual Funds", "value": 1120000, "change": 14.2},
     {"name": "Fixed Deposits", "value": 550000, "change": 6.8},
     {"name": "Direct Equity", "value": 380000, "change": 21.4},
@@ -11,10 +12,10 @@ portfolio_holdings = [
     {"name": "Emergency Fund (Savings)", "value": 225320, "change": 3.5},
 ]
 
-total_wealth = sum(h["value"] for h in portfolio_holdings)
+total_wealth: int = int(sum(h["value"] for h in portfolio_holdings))
 
 # ---- Transactions ----
-transactions = [
+transactions: List[Dict[str, Union[str, int]]] = [
     {"date": "2026-02-27", "merchant": "Zomato", "category": "Food & Dining", "amount": 640},
     {"date": "2026-02-26", "merchant": "Big Bazaar", "category": "Groceries", "amount": 2150},
     {"date": "2026-02-25", "merchant": "Uber", "category": "Transport", "amount": 320},
@@ -30,15 +31,17 @@ transactions = [
 ]
 
 
-def category_breakdown():
-    totals = {}
+def category_breakdown() -> Dict[str, int]:
+    totals: Dict[str, int] = {}
     for t in transactions:
-        totals[t["category"]] = totals.get(t["category"], 0) + t["amount"]
+        cat = str(t["category"])
+        amt = int(t["amount"])
+        totals[cat] = totals.get(cat, 0) + amt
     return dict(sorted(totals.items(), key=lambda kv: kv[1], reverse=True))
 
 
 # ---- Goals ----
-goals = [
+goals: List[Dict[str, Union[str, int]]] = [
     {
         "id": "g1",
         "name": "Retirement Corpus",
@@ -69,7 +72,7 @@ goals = [
 ]
 
 # ---- Risk profiles ----
-risk_allocations = {
+risk_allocations: Dict[str, Dict[str, Union[int, str]]] = {
     "Conservative": {
         "equity": 25,
         "debt": 60,
@@ -90,7 +93,7 @@ risk_allocations = {
     },
 }
 
-suggestions_by_risk = {
+suggestions_by_risk: Dict[str, List[Dict[str, str]]] = {
     "Conservative": [
         {"type": "FD", "name": "IDBI Max FD", "detail": "7.1% p.a., 3-year lock-in", "expected_return": "7.1% p.a."},
         {"type": "SIP", "name": "IDBI Conservative Hybrid SIP", "detail": "₹5,000/mo, debt-heavy", "expected_return": "8% p.a."},
@@ -109,7 +112,7 @@ suggestions_by_risk = {
 }
 
 # ---- Notifications ----
-notifications = [
+notifications: List[Dict[str, str]] = [
     {"title": "Unusual spending detected", "body": "Your Shopping spend is 38% higher than last month's average.", "time": "2h ago", "type": "alert"},
     {"title": "SIP opportunity", "body": "Bumping your retirement SIP by ₹5,000 gets you there 3 years sooner.", "time": "5h ago", "type": "tip"},
     {"title": "Goal milestone reached", "body": "You're 19% funded toward your Dream Home goal. Keep going!", "time": "1d ago", "type": "goal"},

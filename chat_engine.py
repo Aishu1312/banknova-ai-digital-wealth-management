@@ -1,5 +1,6 @@
 """Rule-based AI response engine — ported from lib/chatEngine.ts."""
 
+from typing import List, Dict, Any, Union
 from data import (
     category_breakdown,
     goals,
@@ -15,27 +16,43 @@ def get_response(user_text: str, risk: str) -> str:
 
     if any(k in text for k in ["spend", "expense"]):
         breakdown = category_breakdown()
+        if not breakdown:
+            return "You haven't spent anything this month."
+        
         top_cat, top_amount = next(iter(breakdown.items()))
-        avg = sum(breakdown.values()) / len(breakdown)
-        pct_vs_avg = round((top_amount / avg - 1) * 100)
-        return (
-            f"Your top spending category this month is **{top_cat}** at ₹{top_amount:,}, "
-            f"which is {pct_vs_avg}% above your average category spend. "
-            f"Want me to suggest ways to trim it?"
-        )
+        num_categories = len(breakdown)
+        avg = sum(breakdown.values()) / num_categories if num_categories > 0 else 0
+        
+        if avg > 0:
+            pct_vs_avg = round((top_amount / avg - 1) * 100)
+            return (
+                f"Your top spending category this month is **{top_cat}** at ₹{top_amount:,}, "
+                f"which is {pct_vs_avg}% above your average category spend. "
+                f"Want me to suggest ways to trim it?"
+            )
+        else:
+            return f"Your top spending category this month is **{top_cat}** at ₹{top_amount:,}."
 
     if any(k in text for k in ["goal", "retire", "home", "education"]):
+        if not goals:
+            return "You haven't set any goals yet. Head to the Goals tab to create one."
         g = goals[0]
-        pct = round(g["saved"] / g["target"] * 100)
-        boosted_sip = g["monthly_sip"] + 5000
+        target = g.get("target", 0)
+        saved = g.get("saved", 0)
+        
+        pct = round(saved / target * 100) if target > 0 else 0
+        boosted_sip = g.get("monthly_sip", 0) + 5000
         return (
-            f"Your **{g['name']}** goal is {pct}% funded (₹{g['saved']:,} of ₹{g['target']:,}). "
-            f"Bumping your SIP from ₹{g['monthly_sip']:,}/mo to ₹{boosted_sip:,}/mo would get you there sooner."
+            f"Your **{g['name']}** goal is {pct}% funded (₹{saved:,} of ₹{target:,}). "
+            f"Bumping your SIP from ₹{g.get('monthly_sip', 0):,}/mo to ₹{boosted_sip:,}/mo would get you there sooner."
         )
 
     if any(k in text for k in ["invest", "sip", "risk"]):
-        alloc = risk_allocations[risk]
-        picks = suggestions_by_risk[risk][:2]
+        alloc = risk_allocations.get(risk)
+        if not alloc:
+            return f"I don't have allocation data for the {risk} profile."
+        
+        picks = suggestions_by_risk.get(risk, [])[:2]
         picks_text = " and ".join(f"**{p['name']}** ({p['expected_return']})" for p in picks)
         return (
             f"Based on your **{risk}** risk profile, I suggest an allocation of "
@@ -44,6 +61,9 @@ def get_response(user_text: str, risk: str) -> str:
         )
 
     if any(k in text for k in ["portfolio", "net worth", "worth"]):
+        if not portfolio_holdings:
+            return f"Your total net worth across holdings is **₹{total_wealth:,}**."
+        
         best = max(portfolio_holdings, key=lambda h: h["change"])
         return (
             f"Your total net worth across holdings is **₹{total_wealth:,}**. "
@@ -56,7 +76,7 @@ def get_response(user_text: str, risk: str) -> str:
     )
 
 
-suggestion_chips = [
+suggestion_chips: List[str] = [
     "How's my spending this month?",
     "What should I invest in?",
     "How's my retirement goal doing?",
