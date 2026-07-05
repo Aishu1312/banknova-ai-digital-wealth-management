@@ -881,7 +881,6 @@ else:
                 <div style="color: #888; font-size: 14px;">Your composite wellness rating across the pillars of personal finance.</div>
             </div>
             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                <!-- Left Score Circle -->
                 <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px;">
                     <div style="position: relative; width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(#f5b03e 0% 64%, #333 64% 100%); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
                         <div style="width: 150px; height: 150px; background-color: #141416; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
@@ -892,7 +891,6 @@ else:
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 500;">Good</div>
                 </div>
-                <!-- Right Breakdown -->
                 <div style="flex: 2.2; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem;">
                     <div style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 1.5rem;">Pillar breakdown</div>
                     <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
@@ -1209,33 +1207,33 @@ else:
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
                         <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Savings</div>
-                        <div style="color: white; font-size: 14px; font-weight: 600;">100/100</div>
+                        <div style="color: #4ade80; font-size: 14px; font-weight: 600;">100/100</div>
                     </div>
                     <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
                         <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Investments</div>
-                        <div style="color: white; font-size: 14px; font-weight: 600;">24/100</div>
+                        <div style="color: #ef4444; font-size: 14px; font-weight: 600;">24/100</div>
                     </div>
                     <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
                         <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Emergency Fund</div>
-                        <div style="color: white; font-size: 14px; font-weight: 600;">46/100</div>
+                        <div style="color: #f5b03e; font-size: 14px; font-weight: 600;">46/100</div>
                     </div>
                     <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
                         <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Insurance</div>
-                        <div style="color: white; font-size: 14px; font-weight: 600;">35/100</div>
+                        <div style="color: #ef4444; font-size: 14px; font-weight: 600;">35/100</div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 1rem; margin-bottom: 3rem;">
                     <div style="flex: 1;">
                         <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Debt</div>
-                        <div style="color: white; font-size: 14px; font-weight: 600;">65/100</div>
+                        <div style="color: #f5b03e; font-size: 14px; font-weight: 600;">65/100</div>
                     </div>
                     <div style="flex: 1;">
                         <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Budgeting</div>
-                        <div style="color: white; font-size: 14px; font-weight: 600;">100/100</div>
+                        <div style="color: #4ade80; font-size: 14px; font-weight: 600;">100/100</div>
                     </div>
                     <div style="flex: 1;">
                         <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Credit Behaviour</div>
-                        <div style="color: white; font-size: 14px; font-weight: 600;">80/100</div>
+                        <div style="color: #4ade80; font-size: 14px; font-weight: 600;">80/100</div>
                     </div>
                     <div style="flex: 1;"></div>
                 </div>
