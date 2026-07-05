@@ -558,7 +558,7 @@ else:
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                             <span style="color: white;">Savings</span>
-                            <span style="color: #888;">100</span>
+                            <span style="color: #4ade80; font-weight: 600;">100</span>
                         </div>
                         <div style="background-color: #333; height: 4px; border-radius: 2px;">
                             <div style="background-color: #4ade80; width: 100%; height: 100%; border-radius: 2px;"></div>
@@ -567,7 +567,7 @@ else:
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                             <span style="color: white;">Investments</span>
-                            <span style="color: #888;">24</span>
+                            <span style="color: #ef4444; font-weight: 600;">24</span>
                         </div>
                         <div style="background-color: #333; height: 4px; border-radius: 2px;">
                             <div style="background-color: #ef4444; width: 24%; height: 100%; border-radius: 2px;"></div>
@@ -576,7 +576,7 @@ else:
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                             <span style="color: white;">Emergency Fund</span>
-                            <span style="color: #888;">46</span>
+                            <span style="color: #f5b03e; font-weight: 600;">46</span>
                         </div>
                         <div style="background-color: #333; height: 4px; border-radius: 2px;">
                             <div style="background-color: #f5b03e; width: 46%; height: 100%; border-radius: 2px;"></div>
@@ -585,10 +585,10 @@ else:
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                             <span style="color: white;">Insurance</span>
-                            <span style="color: #888;">35</span>
+                            <span style="color: #ef4444; font-weight: 600;">35</span>
                         </div>
                         <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #f97316; width: 35%; height: 100%; border-radius: 2px;"></div>
+                            <div style="background-color: #ef4444; width: 35%; height: 100%; border-radius: 2px;"></div>
                         </div>
                     </div>
                 </div>
