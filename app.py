@@ -864,7 +864,6 @@ else:
                     </div>
                 </div>
             </div>
-            
             <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#f5b03e'" onmouseout="this.style.borderColor='#2a2a2a'">
                 <div style="color: #f5b03e; font-size: 32px; margin-bottom: 12px;">☁️↑</div>
                 <div style="color: white; font-size: 18px; font-weight: 700; margin-bottom: 8px;">Drop bank statement CSV here</div>
@@ -881,7 +880,6 @@ else:
                 <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Financial Health Score</h1>
                 <div style="color: #888; font-size: 14px;">Your composite wellness rating across the pillars of personal finance.</div>
             </div>
-            
             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                 <!-- Left Score Circle -->
                 <div style="flex: 1; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px;">
@@ -894,7 +892,6 @@ else:
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 500;">Good</div>
                 </div>
-                
                 <!-- Right Breakdown -->
                 <div style="flex: 2.2; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem;">
                     <div style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 1.5rem;">Pillar breakdown</div>
@@ -978,7 +975,6 @@ else:
                     </div>
                 </div>
             </div>
-            
             <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem;">
                 <div style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 1rem;">What this means</div>
                 <div style="color: #888; font-size: 13px; line-height: 1.6; margin-bottom: 0.5rem;">
