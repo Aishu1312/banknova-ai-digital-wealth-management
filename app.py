@@ -79,7 +79,7 @@ if not st.session_state.logged_in:
             st.session_state.logged_in = True
             st.rerun()
     with col3:
-        if st.button("Create Account", use_container_width=True, type="primary"):
+        if st.button("Create Account", key="nav_create_account", use_container_width=True, type="primary"):
             st.session_state.logged_in = True
             st.rerun()
             
@@ -104,7 +104,7 @@ if not st.session_state.logged_in:
         
         btn_col1, btn_col2, btn_col3 = st.columns([1.5, 1.5, 2])
         with btn_col1:
-            if st.button("Create Account", type="primary", use_container_width=True):
+            if st.button("Create Account", key="hero_create_account", type="primary", use_container_width=True):
                 st.session_state.logged_in = True
                 st.rerun()
         with btn_col2:
