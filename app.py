@@ -621,17 +621,87 @@ else:
                 .suggestion-box:hover {
                     border-color: #f5b03e; color: white;
                 }
+                
+                /* Custom Scrollbar for chat history */
+                #chat-history::-webkit-scrollbar { width: 6px; }
+                #chat-history::-webkit-scrollbar-track { background: transparent; }
+                #chat-history::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
             </style>
+            
+            <script>
+                function sendMessage() {
+                    var input = document.getElementById('chat-input-box');
+                    var text = input.value.trim();
+                    if (!text) return;
+                    
+                    var history = document.getElementById('chat-history');
+                    
+                    // Create User Message
+                    var userMsgContainer = document.createElement('div');
+                    userMsgContainer.style.display = 'flex';
+                    userMsgContainer.style.justifyContent = 'flex-end';
+                    userMsgContainer.style.marginBottom = '10px';
+                    
+                    var userMsg = document.createElement('div');
+                    userMsg.style.backgroundColor = '#f5b03e';
+                    userMsg.style.color = 'black';
+                    userMsg.style.padding = '12px 16px';
+                    userMsg.style.borderRadius = '12px';
+                    userMsg.style.borderTopRightRadius = '4px';
+                    userMsg.style.fontSize = '13px';
+                    userMsg.style.display = 'inline-block';
+                    userMsg.style.maxWidth = '80%';
+                    userMsg.innerText = text;
+                    
+                    userMsgContainer.appendChild(userMsg);
+                    history.appendChild(userMsgContainer);
+                    
+                    // Clear input
+                    input.value = '';
+                    
+                    // Scroll to bottom
+                    history.scrollTop = history.scrollHeight;
+                    
+                    // Simulate AI typing delay
+                    setTimeout(function() {
+                        var aiMsgContainer = document.createElement('div');
+                        aiMsgContainer.style.display = 'flex';
+                        aiMsgContainer.style.justifyContent = 'flex-start';
+                        aiMsgContainer.style.marginBottom = '10px';
+                        
+                        var aiMsg = document.createElement('div');
+                        aiMsg.style.backgroundColor = '#1e1e1e';
+                        aiMsg.style.border = '1px solid #333';
+                        aiMsg.style.padding = '12px 16px';
+                        aiMsg.style.borderRadius = '12px';
+                        aiMsg.style.borderTopLeftRadius = '4px';
+                        aiMsg.style.color = '#eee';
+                        aiMsg.style.fontSize = '13px';
+                        aiMsg.style.display = 'inline-block';
+                        aiMsg.style.maxWidth = '80%';
+                        aiMsg.innerHTML = '<span style="color:#f5b03e; font-weight:bold; margin-right:5px;">AI:</span> Frontend Simulation Mode. Wake up backend servers for real financial analysis!';
+                        
+                        aiMsgContainer.appendChild(aiMsg);
+                        history.appendChild(aiMsgContainer);
+                        history.scrollTop = history.scrollHeight;
+                    }, 800);
+                }
+            </script>
+            
             <div style="display: flex; gap: 1.5rem; width: 100%;">
                 <div style="flex: 2.5; background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 500px; display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem; box-sizing: border-box;">
-                    <div>
-                        <div style="background-color: #1e1e1e; border: 1px solid #333; padding: 12px 16px; border-radius: 12px; border-top-left-radius: 4px; color: #eee; font-size: 13px; display: inline-block; max-width: 80%;">
-                            Namaste! I am your BankNova AI advisor. Ask me anything about your money in ₹.
+                    
+                    <div id="chat-history" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; margin-bottom: 15px; padding-right: 5px;">
+                        <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+                            <div style="background-color: #1e1e1e; border: 1px solid #333; padding: 12px 16px; border-radius: 12px; border-top-left-radius: 4px; color: #eee; font-size: 13px; display: inline-block; max-width: 80%;">
+                                Namaste! I am your BankNova AI advisor. Ask me anything about your money in ₹.
+                            </div>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; align-items: center; border: 1px solid #333; padding: 4px; border-radius: 8px; background-color: #0a0a0a;">
-                        <input id="chat-input-box" type="text" placeholder="Ask about SIPs, taxes, retirement..." style="flex: 1; background: transparent; border: none; color: white; padding: 8px 12px; outline: none; font-size: 13px;">
-                        <button onclick="alert('Sending: ' + document.getElementById('chat-input-box').value); document.getElementById('chat-input-box').value='';" style="background-color: #f5b03e; color: black; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;">
+                    
+                    <div style="display: flex; gap: 10px; align-items: center; border: 1px solid #333; padding: 4px; border-radius: 8px; background-color: #0a0a0a; flex-shrink: 0;">
+                        <input id="chat-input-box" onkeypress="if(event.key === 'Enter') sendMessage();" type="text" placeholder="Ask about SIPs, taxes, retirement..." style="flex: 1; background: transparent; border: none; color: white; padding: 8px 12px; outline: none; font-size: 13px;">
+                        <button onclick="sendMessage()" style="background-color: #f5b03e; color: black; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;">
                             ➤
                         </button>
                     </div>
