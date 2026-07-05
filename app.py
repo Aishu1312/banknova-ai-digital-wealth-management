@@ -327,6 +327,14 @@ if not st.session_state.logged_in:
 # 2. DASHBOARD
 # ==========================================
 else:
+    # Reset layout CSS that might have leaked from the Auth/Landing page
+    st.markdown("""
+        <style>
+            [data-testid="stSidebar"] { display: block !important; }
+            .block-container { max-width: 95% !important; padding-top: 1rem !important; }
+        </style>
+    """, unsafe_allow_html=True)
+    
     # Sidebar
     st.sidebar.markdown("""
         <style>
