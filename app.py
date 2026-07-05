@@ -622,7 +622,7 @@ else:
                     </div>
                     <div style="display: flex; gap: 10px; align-items: center; border: 1px solid #333; padding: 4px; border-radius: 8px; background-color: #0a0a0a;">
                         <input type="text" placeholder="Ask about SIPs, taxes, retirement..." style="flex: 1; background: transparent; border: none; color: white; padding: 8px 12px; outline: none; font-size: 13px;">
-                        <button style="background-color: #f5b03e; color: black; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;">
+                        <button onclick="alert('Connecting to BankNova AI backend... (Simulation)')" style="background-color: #f5b03e; color: black; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;">
                             ➤
                         </button>
                     </div>
@@ -633,16 +633,16 @@ else:
             st.markdown("""
                 <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; height: 500px; padding: 1.5rem;">
                     <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 1.5rem;">✨ SUGGESTIONS</div>
-                    <div style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
+                    <div onclick="alert('Simulating AI query: How can I retire at 55?')" style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
                         How can I retire at 55?
                     </div>
-                    <div style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
+                    <div onclick="alert('Simulating AI query: Is my portfolio too risky?')" style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
                         Is my portfolio too risky?
                     </div>
-                    <div style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
+                    <div onclick="alert('Simulating AI query: How much term insurance do I need?')" style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
                         How much term insurance do I need?
                     </div>
-                    <div style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
+                    <div onclick="alert('Simulating AI query: Best tax-saving instruments for me?')" style="border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 10px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#f5b03e'; this.style.color='white'" onmouseout="this.style.borderColor='#333'; this.style.color='#ccc'">
                         Best tax-saving instruments for me?
                     </div>
                 </div>
