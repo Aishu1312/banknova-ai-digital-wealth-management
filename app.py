@@ -65,7 +65,15 @@ if not st.session_state.logged_in:
     # Header
     col1, col2, col3 = st.columns([4, 1, 1])
     with col1:
-        st.markdown("<h3 style='margin: 0; color: #f5b03e; font-weight: 700;'>B <span style='color: white;'>BankNova <span style='color: #f5b03e'>AI</span></span><br><span style='font-size: 10px; color: #555; text-transform: uppercase;'>Wealth OS</span></h3>", unsafe_allow_html=True)
+        st.markdown("""
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="background: linear-gradient(135deg, #fcd34d, #f59e0b); color: black; font-weight: 800; font-size: 20px; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 10px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">B</div>
+                <div style="line-height: 1.1;">
+                    <div style="font-size: 22px; font-weight: 700; color: white; letter-spacing: -0.5px;">BankNova <span style="color: #f5b03e;">AI</span></div>
+                    <div style="font-size: 11px; color: #888; font-weight: 600; letter-spacing: 1.5px;">WEALTH OS</div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
     with col2:
         if st.button("Login", use_container_width=True, type="secondary"):
             st.session_state.logged_in = True
@@ -115,32 +123,47 @@ if not st.session_state.logged_in:
         st.markdown("""
             <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 16px; padding: 2rem; position: relative;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <div style="color: #666; font-size: 12px; font-weight: 600; letter-spacing: 1px;">PORTFOLIO</div>
+                    <div style="color: #666; font-size: 12px; font-weight: 600; letter-spacing: 1.5px;">PORTFOLIO</div>
                     <div style="color: #4ade80; font-size: 12px; font-weight: 600;">+12.4% YoY</div>
                 </div>
-                <div style="font-size: 2.5rem; color: white; font-weight: 700;">₹ 24,85,320</div>
-                <div style="color: #666; font-size: 12px; margin-bottom: 2rem;">Total wealth - Feb 2026</div>
+                <div style="font-size: 2.8rem; color: white; font-weight: 700; margin-bottom: 4px; font-family: monospace, sans-serif;">₹ 24,85,320</div>
+                <div style="color: #666; font-size: 12px; margin-bottom: 2rem;">Total wealth &middot; Feb 2026</div>
                 
                 <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px;">
-                        <div style="color: #666; font-size: 10px; margin-bottom: 4px;">SAVINGS</div>
-                        <div style="color: white; font-size: 16px;">₹ 3.5L</div>
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; background-color: #1a1a1c;">
+                        <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">SAVINGS</div>
+                        <div style="color: white; font-size: 16px; font-weight: 600;">₹ 3.5L</div>
                     </div>
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px;">
-                        <div style="color: #666; font-size: 10px; margin-bottom: 4px;">INVESTMENTS</div>
-                        <div style="color: white; font-size: 16px;">₹ 18.2L</div>
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; background-color: #1a1a1c;">
+                        <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">INVESTMENTS</div>
+                        <div style="color: white; font-size: 16px; font-weight: 600;">₹ 18.2L</div>
                     </div>
-                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px;">
-                        <div style="color: #666; font-size: 10px; margin-bottom: 4px;">EMERGENCY</div>
-                        <div style="color: white; font-size: 16px;">₹ 3.1L</div>
+                    <div style="flex: 1; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; background-color: #1a1a1c;">
+                        <div style="color: #666; font-size: 10px; margin-bottom: 4px; font-weight: 600; letter-spacing: 1px;">EMERGENCY</div>
+                        <div style="color: white; font-size: 16px; font-weight: 600;">₹ 3.1L</div>
                     </div>
                 </div>
-            </div>
-            
-            <div style="background-color: #1a1a1c; border: 1px solid #f5b03e; border-radius: 12px; padding: 1rem; margin-top: -30px; position: relative; z-index: 10; width: 70%; margin-left: -20px;">
-                <div style="color: #f5b03e; font-size: 10px; font-weight: 600; margin-bottom: 8px;">✨ AI INSIGHT</div>
-                <div style="color: #ddd; font-size: 12px; line-height: 1.4;">
-                    You're on track for retirement at 68. Bumping SIP by ₹5K lands you there at 55.
+                
+                <div style="border: 1px solid #2a2a2a; border-radius: 12px; height: 110px; position: relative; overflow: hidden; background-color: #1a1a1c; margin-bottom: -0.5rem;">
+                    <svg viewBox="0 0 400 100" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block; position: absolute; bottom: 0; left: 0;">
+                        <defs>
+                            <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="rgba(245, 176, 62, 0.4)" />
+                                <stop offset="100%" stop-color="rgba(245, 176, 62, 0.0)" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,80 Q100,75 200,60 T400,20 L400,100 L0,100 Z" fill="url(#chartGradient)" />
+                        <path d="M0,80 Q100,75 200,60 T400,20" fill="none" stroke="#f5b03e" stroke-width="2.5" />
+                    </svg>
+                </div>
+                
+                <div style="background-color: #141416; border: 1px solid #555; border-radius: 12px; padding: 1rem; position: absolute; bottom: -20px; left: -20px; z-index: 10; width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.6);">
+                    <div style="color: #888; font-size: 11px; font-weight: 600; margin-bottom: 8px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+                        <span style="color: #f5b03e; font-size: 14px;">✨</span> AI INSIGHT
+                    </div>
+                    <div style="color: #ddd; font-size: 13px; line-height: 1.5;">
+                        You're on track for retirement at 58. Bumping SIP by ₹5K lands you there at 55.
+                    </div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
@@ -179,7 +202,15 @@ if not st.session_state.logged_in:
 # ==========================================
 else:
     # Sidebar
-    st.sidebar.markdown("<h3 style='margin-bottom: 2rem; color: #f5b03e; font-weight: 700;'>B <span style='color: white; font-size: 18px;'>BankNova <span style='color: #f5b03e'>AI</span></span><br><span style='font-size: 9px; color: #555; text-transform: uppercase;'>Wealth OS</span></h3>", unsafe_allow_html=True)
+    st.sidebar.markdown("""
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 2rem;">
+            <div style="background: linear-gradient(135deg, #fcd34d, #f59e0b); color: black; font-weight: 800; font-size: 20px; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 10px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">B</div>
+            <div style="line-height: 1.1;">
+                <div style="font-size: 22px; font-weight: 700; color: white; letter-spacing: -0.5px;">BankNova <span style="color: #f5b03e;">AI</span></div>
+                <div style="font-size: 11px; color: #888; font-weight: 600; letter-spacing: 1.5px;">WEALTH OS</div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
     
     page = st.sidebar.radio(
         "",
