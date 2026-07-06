@@ -16,6 +16,28 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import RedirectResponse
 from authlib.integrations.starlette_client import OAuth
 from fastapi.responses import JSONResponse, Response
+import json
+import logging
+from sqlalchemy import text
+
+class JSONFormatter(logging.Formatter):
+    def format(self, record):
+        log_record = {
+            "time": self.formatTime(record, self.datefmt),
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "module": record.module
+        }
+        if record.exc_info:
+            log_record["trace"] = self.formatException(record.exc_info)
+        return json.dumps(log_record)
+
+logger = logging.getLogger("banknova_api")
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(JSONFormatter())
+    logger.addHandler(handler)
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -35,6 +57,40 @@ app.add_middleware(SecurityHeadersMiddleware)
 
 # OAuth needs session middleware
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET_KEY", secrets.token_urlsafe(32)))
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled exception in {request.url.path}", exc_info=exc)
+    return JSONResponse(
+        status_code=500,
+        content={"message": "Internal Server Error"}
+    )
+
+@app.get("/health")
+def health_check(db: Session = Depends(database.get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        db_status = "ok"
+    except Exception as e:
+        logger.error(f"Database health check failed: {e}")
+        db_status = "error"
+    return {"status": "ok" if db_status == "ok" else "degraded", "database": db_status}
+
+@app.get("/status")
+def status_check():
+    return {"status": "ok", "service": "BankNova API"}
+
+@app.get("/version")
+def version_check():
+    return {"version": "1.0.0"}
+
+@app.get("/ready")
+def ready_check(db: Session = Depends(database.get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "ready"}
+    except Exception:
+        raise HTTPException(status_code=503, detail="Service Unavailable")
 
 oauth = OAuth()
 oauth.register(

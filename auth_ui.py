@@ -1,8 +1,19 @@
 import streamlit as st
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import re
 import time
 import streamlit.components.v1 as components
+
+@st.cache_resource
+def get_api_session():
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=0.5, status_forcelist=[500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retry, pool_connections=10, pool_maxsize=10)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
 
 API_URL = "http://127.0.0.1:8000/auth"
 
@@ -153,7 +164,8 @@ def render():
             else:
                 with st.spinner("Authenticating..."):
                     try:
-                        res = requests.post(f"{API_URL}/login", data={"username": email, "password": password})
+                        session = get_api_session()
+                        res = session.post(f"{API_URL}/login", data={"username": email, "password": password}, timeout=5)
                         if res.status_code == 200:
                             data = res.json()
                             st.session_state.access_token = data["access_token"]
@@ -167,8 +179,12 @@ def render():
                                 st.rerun()
                             else:
                                 st.error(msg)
+                    except requests.exceptions.Timeout:
+                        st.error("The request timed out. Please try again.")
+                    except requests.exceptions.ConnectionError:
+                        st.error("Backend Offline: Server unavailable. Attempting reconnection...")
                     except Exception as e:
-                        st.error("Something went wrong. Please try again later.")
+                        st.error("Network Error: Please check your internet connection.")
                         
         st.markdown('<div class="separator">OR CONTINUE WITH</div>', unsafe_allow_html=True)
         
@@ -223,7 +239,8 @@ def render():
             else:
                 with st.spinner("Creating account..."):
                     try:
-                        res = requests.post(f"{API_URL}/register", json={"name": name, "email": email, "password": password})
+                        session = get_api_session()
+                        res = session.post(f"{API_URL}/register", json={"name": name, "email": email, "password": password}, timeout=5)
                         if res.status_code == 200:
                             st.success("Account created! Please check your email to verify.")
                             time.sleep(2)
@@ -231,7 +248,11 @@ def render():
                             st.rerun()
                         else:
                             st.error(res.json().get("detail", "Registration failed"))
-                    except:
+                    except requests.exceptions.Timeout:
+                        st.error("The request timed out. Please try again.")
+                    except requests.exceptions.ConnectionError:
+                        st.error("Backend Offline: Server unavailable.")
+                    except Exception:
                         st.error("Something went wrong. Please try again later.")
                         
         st.markdown("<br>", unsafe_allow_html=True)
@@ -250,9 +271,12 @@ def render():
         if st.button("Resend Verification Email", type="primary"):
             with st.spinner("Sending..."):
                 try:
-                    res = requests.post(f"{API_URL}/resend-verification", json={"email": email})
+                    session = get_api_session()
+                    res = session.post(f"{API_URL}/resend-verification", json={"email": email}, timeout=5)
                     st.success("Verification email sent! Please check your inbox.")
-                except:
+                except requests.exceptions.ConnectionError:
+                    st.error("Backend Offline: Unable to connect.")
+                except Exception:
                     st.error("Unable to connect. Please try again.")
         
         st.markdown("<br>", unsafe_allow_html=True)
@@ -273,7 +297,8 @@ def render():
             else:
                 with st.spinner("Sending password reset link..."):
                     try:
-                        res = requests.post(f"{API_URL}/forgot-password", json={"email": email}, timeout=10)
+                        session = get_api_session()
+                        res = session.post(f"{API_URL}/forgot-password", json={"email": email}, timeout=5)
                         if res.status_code == 200:
                             data = res.json()
                             st.success(data.get("message", "Reset link sent."))
@@ -281,8 +306,10 @@ def render():
                                 st.info(f"**Reset Link (Dev Mode):** [Click here to reset]({data['reset_link']})")
                         else:
                             st.error(res.json().get("detail", "Error sending reset link."))
+                    except requests.exceptions.Timeout:
+                        st.error("The request timed out. Please try again.")
                     except requests.exceptions.ConnectionError:
-                        st.error("Unable to connect to the backend API. Please ensure it is running on port 8000.")
+                        st.error("Backend Offline: Server unavailable.")
                     except Exception:
                         st.error("An unexpected error occurred while connecting.")
                         
@@ -322,10 +349,11 @@ def render():
             else:
                 with st.spinner("Updating password..."):
                     try:
-                        res = requests.post(f"{API_URL}/reset-password", json={
+                        session = get_api_session()
+                        res = session.post(f"{API_URL}/reset-password", json={
                             "token": st.session_state.reset_token,
                             "new_password": password
-                        })
+                        }, timeout=5)
                         if res.status_code == 200:
                             st.success("Password changed successfully.")
                             time.sleep(2)
@@ -334,7 +362,11 @@ def render():
                             st.rerun()
                         else:
                             st.error(res.json().get("detail", "Reset failed."))
-                    except:
+                    except requests.exceptions.Timeout:
+                        st.error("The request timed out. Please try again.")
+                    except requests.exceptions.ConnectionError:
+                        st.error("Backend Offline: Server unavailable.")
+                    except Exception:
                         st.error("Something went wrong. Please try again later.")
                         
         st.markdown("<br>", unsafe_allow_html=True)

@@ -20,7 +20,7 @@ class User(Base):
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
     token = Column(String, unique=True, index=True)
     expires_at = Column(DateTime)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
@@ -28,7 +28,7 @@ class RefreshToken(Base):
 class PasswordResetToken(Base):
     __tablename__ = "password_reset_tokens"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
     token = Column(String, unique=True, index=True)
     expires_at = Column(DateTime)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

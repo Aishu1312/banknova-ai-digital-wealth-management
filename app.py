@@ -78,7 +78,8 @@ if "reset" in st.query_params:
 
 if "verify" in st.query_params:
     try:
-        res = requests.post(f"http://localhost:8000/auth/verify-email?token={st.query_params['verify']}")
+        session = auth_ui.get_api_session()
+        res = session.post(f"http://127.0.0.1:8000/auth/verify-email?token={st.query_params['verify']}", timeout=5)
         if res.status_code == 200:
             st.toast("Email verified successfully! You can now log in.", icon="✅")
         else:
@@ -96,6 +97,15 @@ if "error" in st.query_params:
 # ==========================================
 if not st.session_state.logged_in:
     if st.session_state.auth_mode:
+        try:
+            auth_ui.get_api_session().get("http://127.0.0.1:8000/health", timeout=2)
+        except requests.exceptions.ConnectionError:
+            st.error("Backend Offline: The API server is not running on port 8000. Please start the backend (`uvicorn api:app`).")
+            st.stop()
+        except requests.exceptions.Timeout:
+            st.error("Backend is taking too long to respond. Please check the server status.")
+            st.stop()
+            
         auth_ui.render()
         st.stop()
 
@@ -321,7 +331,8 @@ else:
     
     if st.sidebar.button("↪ Log out", type="tertiary", use_container_width=True):
         try:
-            requests.post("http://localhost:8000/auth/logout")
+            session = auth_ui.get_api_session()
+            session.post("http://127.0.0.1:8000/auth/logout", timeout=5)
         except:
             pass
         st.session_state.logged_in = False
