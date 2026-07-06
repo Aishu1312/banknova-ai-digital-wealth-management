@@ -166,6 +166,8 @@ def forgot_password(request: Request, payload: ForgotPassword, db: Session = Dep
         db.add(db_token)
         db.commit()
         auth_utils.send_reset_password_email(user.email, reset_token)
+        reset_link = f"http://localhost:8501/?reset={reset_token}"
+        return {"message": "If an account exists for this email, a reset link has been sent.", "reset_link": reset_link}
     
     return {"message": "If an account exists for this email, a reset link has been sent."}
 

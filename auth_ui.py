@@ -4,7 +4,7 @@ import re
 import time
 import streamlit.components.v1 as components
 
-API_URL = "http://localhost:8000/auth"
+API_URL = "http://127.0.0.1:8000/auth"
 
 def check_password_strength(password: str):
     if not password:
@@ -273,10 +273,18 @@ def render():
             else:
                 with st.spinner("Sending password reset link..."):
                     try:
-                        res = requests.post(f"{API_URL}/forgot-password", json={"email": email})
-                        st.success("If an account exists for this email, a reset link has been sent.")
-                    except:
-                        st.error("Unable to connect. Please check your internet connection.")
+                        res = requests.post(f"{API_URL}/forgot-password", json={"email": email}, timeout=10)
+                        if res.status_code == 200:
+                            data = res.json()
+                            st.success(data.get("message", "Reset link sent."))
+                            if "reset_link" in data:
+                                st.info(f"**Reset Link (Dev Mode):** [Click here to reset]({data['reset_link']})")
+                        else:
+                            st.error(res.json().get("detail", "Error sending reset link."))
+                    except requests.exceptions.ConnectionError:
+                        st.error("Unable to connect to the backend API. Please ensure it is running on port 8000.")
+                    except Exception:
+                        st.error("An unexpected error occurred while connecting.")
                         
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("Back to Login", type="tertiary"):
