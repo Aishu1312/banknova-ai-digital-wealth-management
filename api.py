@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -19,6 +19,9 @@ from fastapi.responses import JSONResponse, Response
 import json
 import logging
 from sqlalchemy import text
+
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8501")
+API_URL = os.environ.get("API_URL", "http://localhost:8000")
 
 class JSONFormatter(logging.Formatter):
     def format(self, record):
@@ -101,26 +104,6 @@ oauth.register(
     client_kwargs={'scope': 'openid email profile'}
 )
 
-oauth.register(
-    name='github',
-    client_id=os.environ.get('GITHUB_CLIENT_ID'),
-    client_secret=os.environ.get('GITHUB_CLIENT_SECRET'),
-    access_token_url='https://github.com/login/oauth/access_token',
-    access_token_params=None,
-    authorize_url='https://github.com/login/oauth/authorize',
-    authorize_params=None,
-    api_base_url='https://api.github.com/',
-    client_kwargs={'scope': 'user:email'}
-)
-
-oauth.register(
-    name='microsoft',
-    client_id=os.environ.get('MICROSOFT_CLIENT_ID'),
-    client_secret=os.environ.get('MICROSOFT_CLIENT_SECRET'),
-    server_metadata_url='https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-    client_kwargs={'scope': 'openid email profile'}
-)
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 class UserCreate(BaseModel):
@@ -143,7 +126,7 @@ class RefreshTokenReq(BaseModel):
 
 @app.post("/auth/register")
 @limiter.limit("5/minute")
-def register(request: Request, user: UserCreate, db: Session = Depends(database.get_db)):
+def register(request: Request, user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -161,7 +144,7 @@ def register(request: Request, user: UserCreate, db: Session = Depends(database.
     db.commit()
     db.refresh(new_user)
     
-    auth_utils.send_verification_email(user.email, verification_token)
+    background_tasks.add_task(auth_utils.send_verification_email, user.email, verification_token)
     return {"message": "User created successfully. Please verify your email."}
 
 @app.post("/auth/login")
@@ -210,7 +193,7 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db
 
 @app.post("/auth/forgot-password")
 @limiter.limit("3/minute")
-def forgot_password(request: Request, payload: ForgotPassword, db: Session = Depends(database.get_db)):
+def forgot_password(request: Request, payload: ForgotPassword, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if user:
         reset_token = secrets.token_urlsafe(32)
@@ -221,8 +204,8 @@ def forgot_password(request: Request, payload: ForgotPassword, db: Session = Dep
         )
         db.add(db_token)
         db.commit()
-        auth_utils.send_reset_password_email(user.email, reset_token)
-        reset_link = f"http://localhost:8501/?reset={reset_token}"
+        background_tasks.add_task(auth_utils.send_reset_password_email, user.email, reset_token)
+        reset_link = f"{FRONTEND_URL}/?reset={reset_token}"
         return {"message": "If an account exists for this email, a reset link has been sent.", "reset_link": reset_link}
     
     return {"message": "If an account exists for this email, a reset link has been sent."}
@@ -256,7 +239,7 @@ def verify_email(token: str, db: Session = Depends(database.get_db)):
 
 @app.post("/auth/resend-verification")
 @limiter.limit("3/minute")
-def resend_verification(request: Request, payload: ResendVerification, db: Session = Depends(database.get_db)):
+def resend_verification(request: Request, payload: ResendVerification, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user:
         return {"message": "If an account exists, a verification email has been sent."}
@@ -267,7 +250,7 @@ def resend_verification(request: Request, payload: ResendVerification, db: Sessi
     verification_token = secrets.token_urlsafe(32)
     user.verification_token = verification_token
     db.commit()
-    auth_utils.send_verification_email(user.email, verification_token)
+    background_tasks.add_task(auth_utils.send_verification_email, user.email, verification_token)
     return {"message": "If an account exists, a verification email has been sent."}
 
 @app.post("/auth/refresh")
@@ -311,35 +294,30 @@ def logout_all(request: Request, response: Response, email: str, db: Session = D
 
 @app.get("/auth/login/{provider}")
 async def login_via_oauth(provider: str, request: Request):
-    if provider not in ["google", "github", "microsoft"]:
+    if provider not in ["google"]:
         raise HTTPException(status_code=400, detail="Unsupported provider")
-    redirect_uri = f"http://localhost:8000/auth/callback/{provider}"
+    redirect_uri = f"{API_URL}/callback/{provider}"
     client = oauth.create_client(provider)
     return await client.authorize_redirect(request, redirect_uri)
 
 @app.get("/auth/callback/{provider}")
 async def auth_callback(provider: str, request: Request, db: Session = Depends(database.get_db)):
     try:
+        if provider != "google":
+            raise HTTPException(status_code=400, detail="Unsupported provider")
+            
         client = oauth.create_client(provider)
         token = await client.authorize_access_token(request)
         
-        if provider == "google" or provider == "microsoft":
-            user_info = token.get('userinfo')
-            if not user_info:
-                user_info = await client.parse_id_token(request, token)
-            email = user_info.get("email")
-            name = user_info.get("name", "User")
-        elif provider == "github":
-            resp = await client.get('user/emails', token=token)
-            emails = resp.json()
-            email = next((e['email'] for e in emails if e.get('primary')), emails[0]['email'])
-            resp_prof = await client.get('user', token=token)
-            prof_data = resp_prof.json()
-            name = prof_data.get('name') or "User"
-            avatar = prof_data.get('avatar_url')
+        user_info = token.get('userinfo')
+        if not user_info:
+            user_info = await client.parse_id_token(request, token)
+            
+        email = user_info.get("email")
+        name = user_info.get("name", "User")
             
         if not email:
-            return RedirectResponse(url="http://localhost:8501/?error=NoEmailFound")
+            return RedirectResponse(url=f"{FRONTEND_URL}/?error=NoEmailFound")
             
         user = db.query(models.User).filter(models.User.email == email).first()
         if not user:
@@ -350,7 +328,7 @@ async def auth_callback(provider: str, request: Request, db: Session = Depends(d
                 hashed_password=auth_utils.get_password_hash(secrets.token_urlsafe(16)),
                 is_verified=True,
                 auth_provider=provider,
-                avatar_url=avatar if provider == 'github' else user_info.get('picture')
+                avatar_url=user_info.get('picture')
             )
             db.add(user)
             db.commit()
@@ -364,7 +342,7 @@ async def auth_callback(provider: str, request: Request, db: Session = Depends(d
         db.add(db_refresh)
         db.commit()
         
-        response = RedirectResponse(url=f"http://localhost:8501/?token={access_token}")
+        response = RedirectResponse(url=f"{FRONTEND_URL}/?token={access_token}")
         response.set_cookie(
             key="refresh_token", 
             value=refresh_token, 
@@ -376,5 +354,6 @@ async def auth_callback(provider: str, request: Request, db: Session = Depends(d
         return response
         
     except Exception as e:
-        return RedirectResponse(url="http://localhost:8501/?error=OAuthFailed")
+        logger.error(f"OAuth error: {str(e)}", exc_info=e)
+        return RedirectResponse(url=f"{FRONTEND_URL}/?error=OAuthFailed")
 

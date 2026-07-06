@@ -5,6 +5,10 @@ from urllib3.util.retry import Retry
 import re
 import time
 import streamlit.components.v1 as components
+import os
+
+BACKEND_URL = os.environ.get("API_URL", "http://127.0.0.1:8000")
+API_URL = f"{BACKEND_URL}/auth"
 
 @st.cache_resource
 def get_api_session():
@@ -15,8 +19,6 @@ def get_api_session():
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     return session
-
-API_URL = "http://127.0.0.1:8000/auth"
 
 def check_password_strength(password: str):
     if not password:
@@ -44,7 +46,7 @@ def trigger_oauth(provider):
     # Fast check if backend is online before redirecting browser
     try:
         session = get_api_session()
-        session.get("http://127.0.0.1:8000/health", timeout=1)
+        session.get(f"{BACKEND_URL}/health", timeout=1)
     except:
         st.error(f"Cannot connect to backend to login with {provider.title()}. Please ensure the backend is running.")
         return
@@ -201,16 +203,6 @@ def render():
             trigger_oauth("google")
         if st.session_state.get("loading_google"):
             st.info("Redirecting to Google...")
-
-        if st.button("Continue with Microsoft", type="secondary", use_container_width=True):
-            trigger_oauth("microsoft")
-        if st.session_state.get("loading_microsoft"):
-            st.info("Redirecting to Microsoft...")
-
-        if st.button("Continue with GitHub", type="secondary", use_container_width=True):
-            trigger_oauth("github")
-        if st.session_state.get("loading_github"):
-            st.info("Redirecting to GitHub...")
         
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("Don't have an account? Sign up", type="tertiary"):
@@ -225,6 +217,7 @@ def render():
         name = st.text_input("Full Name", placeholder="Aarav Sharma")
         email = st.text_input("Email", placeholder="you@example.com", key="reg_email")
         password = st.text_input("Password", type="password", key="reg_pass")
+        confirm = st.text_input("Confirm Password", type="password", key="reg_pass_conf")
         
         strength = check_password_strength(password)
         if strength:
@@ -241,8 +234,10 @@ def render():
                 
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("Register", type="primary"):
-            if not name or not email or not password:
+            if not name or not email or not password or not confirm:
                 st.error("Please fill in all fields.")
+            elif password != confirm:
+                st.error("Passwords do not match.")
             elif validate_password(password):
                 st.error("Please choose a stronger password matching the criteria.")
             else:
@@ -251,8 +246,7 @@ def render():
                         session = get_api_session()
                         res = session.post(f"{API_URL}/register", json={"name": name, "email": email, "password": password}, timeout=2)
                         if res.status_code == 200:
-                            st.success("Account created! Please check your email to verify.")
-                            time.sleep(2)
+                            st.toast("Account created successfully! Please check your email.", icon="✅")
                             st.session_state.auth_mode = "login"
                             st.rerun()
                         else:

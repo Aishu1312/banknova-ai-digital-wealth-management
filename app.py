@@ -12,6 +12,8 @@ import subprocess
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
+API_URL = os.environ.get("API_URL", "http://127.0.0.1:8000")
+
 # Auto-seed the database if it doesn't exist and we're using SQLite
 if os.environ.get("DATABASE_URL", "sqlite").startswith("sqlite") and not os.path.exists("./banknova.db"):
     try:
@@ -82,7 +84,7 @@ if "reset" in st.query_params:
 if "verify" in st.query_params:
     try:
         session = auth_ui.get_api_session()
-        res = session.post(f"http://127.0.0.1:8000/auth/verify-email?token={st.query_params['verify']}", timeout=5)
+        res = session.post(f"{API_URL}/auth/verify-email?token={st.query_params['verify']}", timeout=5)
         if res.status_code == 200:
             st.toast("Email verified successfully! You can now log in.", icon="✅")
         else:
@@ -326,7 +328,7 @@ else:
     if st.sidebar.button("↪ Log out", type="tertiary", use_container_width=True):
         try:
             session = auth_ui.get_api_session()
-            session.post("http://127.0.0.1:8000/auth/logout", timeout=5)
+            session.post(f"{API_URL}/auth/logout", timeout=5)
         except:
             pass
         st.session_state.logged_in = False

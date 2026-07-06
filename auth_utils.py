@@ -9,6 +9,7 @@ from passlib.context import CryptContext
 import jwt
 
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "super-secret-key-change-in-production")
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8501")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7
@@ -79,7 +80,7 @@ def send_email(to_email: str, subject: str, html_body: str):
         print(f"Failed to send email: {e}")
 
 def send_verification_email(email: str, token: str):
-    link = f"http://localhost:8501/?verify={token}"
+    link = f"{FRONTEND_URL}/?verify={token}"
     html = f"""
     <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 40px; background-color: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
         <div style="text-align: center; margin-bottom: 30px;">
@@ -101,7 +102,7 @@ def send_verification_email(email: str, token: str):
     send_email(email, "Verify Your BankNova AI Account", html)
 
 def send_reset_password_email(email: str, token: str):
-    link = f"http://localhost:8501/?reset={token}"
+    link = f"{FRONTEND_URL}/?reset={token}"
     html = f"""
     <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 40px; background-color: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
         <div style="text-align: center; margin-bottom: 30px;">
