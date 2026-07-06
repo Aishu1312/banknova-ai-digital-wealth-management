@@ -4,52 +4,13 @@ import pandas as pd
 import plotly.graph_objects as go
 import logging
 import os
-import subprocess
-import time
 import requests
+import time
+import subprocess
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
-
-import sys
-
-@st.cache_resource
-def ensure_backend_running():
-    """Automatically start the FastAPI backend if it's not running."""
-    try:
-        # Check if already running
-        res = requests.get("http://127.0.0.1:8000/health", timeout=1)
-        if res.status_code == 200:
-            logger.info("Backend is already running.")
-            return True
-    except:
-        pass
-        
-    logger.info("Starting FastAPI backend automatically...")
-    # Start the backend in a subprocess using the current Python executable
-    process = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
-    
-    # Poll for up to 10 seconds to ensure it starts
-    for _ in range(10):
-        time.sleep(1)
-        try:
-            res = requests.get("http://127.0.0.1:8000/health", timeout=1)
-            if res.status_code == 200:
-                logger.info("Backend started successfully.")
-                return process
-        except:
-            pass
-            
-    logger.error("Backend failed to respond within 10 seconds.")
-    return process
-
-# Ensure backend starts up
-ensure_backend_running()
 
 # Auto-seed the database if it doesn't exist and we're using SQLite
 if os.environ.get("DATABASE_URL", "sqlite").startswith("sqlite") and not os.path.exists("./banknova.db"):
@@ -142,7 +103,7 @@ if not st.session_state.logged_in:
         try:
             auth_ui.get_api_session().get("http://127.0.0.1:8000/health", timeout=2)
         except requests.exceptions.ConnectionError:
-            st.error("Backend Offline: The API server is not running on port 8000. Please start the backend (`uvicorn api:app`).")
+            st.error("Backend Offline: The API server is not running on port 8000. Please start the application by running `run.bat` or `run.sh` in the project root.")
             st.stop()
         except requests.exceptions.Timeout:
             st.error("Backend is taking too long to respond. Please check the server status.")
