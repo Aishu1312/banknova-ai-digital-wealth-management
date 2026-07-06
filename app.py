@@ -14,20 +14,26 @@ logger = logging.getLogger(__name__)
 
 API_URL = os.environ.get("API_URL", "http://127.0.0.1:8000")
 
-@st.cache_resource
 def ensure_backend_running():
+    if st.session_state.get("backend_checked"):
+        return
+        
     import sys
     import os
     import shutil
     import subprocess
     import time
     if "127.0.0.1" not in API_URL and "localhost" not in API_URL:
+        st.session_state.backend_checked = True
         return
     try:
         if requests.get(f"{API_URL}/health", timeout=1).status_code == 200:
+            st.session_state.backend_checked = True
             return
     except:
         pass
+        
+    st.session_state.backend_checked = True
     
     st.toast("Starting local backend server... This may take 15 seconds.", icon="⏳")
     
