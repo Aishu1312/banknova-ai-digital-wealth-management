@@ -100,15 +100,6 @@ if "error" in st.query_params:
 # ==========================================
 if not st.session_state.logged_in:
     if st.session_state.auth_mode:
-        try:
-            auth_ui.get_api_session().get("http://127.0.0.1:8000/health", timeout=2)
-        except requests.exceptions.ConnectionError:
-            st.error("Backend Offline: The API server is not running on port 8000. Please start the application by running `run.bat` or `run.sh` in the project root.")
-            st.stop()
-        except requests.exceptions.Timeout:
-            st.error("Backend is taking too long to respond. Please check the server status.")
-            st.stop()
-            
         auth_ui.render()
         st.stop()
 
