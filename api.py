@@ -60,6 +60,9 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SecurityHeadersMiddleware)
 
+# Initialize database tables
+models.Base.metadata.create_all(bind=database.engine)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
