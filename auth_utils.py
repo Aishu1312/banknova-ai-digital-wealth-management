@@ -81,13 +81,21 @@ def send_email(to_email: str, subject: str, html_body: str):
 def send_verification_email(email: str, token: str):
     link = f"http://localhost:8501/?verify={token}"
     html = f"""
-    <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-        <h2 style="color: #333;">Welcome to BankNova AI</h2>
-        <p>Please verify your email address to complete your registration and secure your account.</p>
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="{link}" style="background-color: #f5b03e; color: black; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 5px;">Verify Email</a>
+    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 40px; background-color: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="display: inline-block; background: linear-gradient(135deg, #fcd34d, #f59e0b); color: #000; font-weight: 800; font-size: 24px; width: 48px; height: 48px; line-height: 48px; border-radius: 12px; margin: 0 auto;">B</div>
         </div>
-        <p style="color: #888; font-size: 12px;">If you didn't create an account with us, please ignore this email.</p>
+        <h2 style="color: #111111; font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 10px;">Verify your email</h2>
+        <p style="color: #555555; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 30px;">
+            Welcome to BankNova AI! To get started and secure your account, please verify your email address.
+        </p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{link}" style="background-color: #111111; color: #ffffff; padding: 14px 28px; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 6px; display: inline-block;">Verify Email Address</a>
+        </div>
+        <hr style="border: none; border-top: 1px solid #eaeaea; margin: 30px 0;" />
+        <p style="color: #888888; font-size: 13px; line-height: 1.5; text-align: center;">
+            If you did not create an account with BankNova AI, please ignore this email. This link will expire in 24 hours.
+        </p>
     </div>
     """
     send_email(email, "Verify Your BankNova AI Account", html)
@@ -95,14 +103,21 @@ def send_verification_email(email: str, token: str):
 def send_reset_password_email(email: str, token: str):
     link = f"http://localhost:8501/?reset={token}"
     html = f"""
-    <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-        <h2 style="color: #333;">Password Reset Request</h2>
-        <p>We received a request to reset your password. This link is valid for 15 minutes.</p>
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="{link}" style="background-color: #f5b03e; color: black; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 5px;">Reset Password</a>
+    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 40px; background-color: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="display: inline-block; background: linear-gradient(135deg, #fcd34d, #f59e0b); color: #000; font-weight: 800; font-size: 24px; width: 48px; height: 48px; line-height: 48px; border-radius: 12px; margin: 0 auto;">B</div>
         </div>
-        <p style="color: #ef4444; font-size: 13px; font-weight: bold;">Security Warning:</p>
-        <p style="color: #888; font-size: 12px;">If you did not request a password reset, someone may be trying to access your account. Do not click the link and consider updating your security settings.</p>
+        <h2 style="color: #111111; font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 10px;">Reset your password</h2>
+        <p style="color: #555555; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 30px;">
+            We received a request to reset the password for your BankNova AI account associated with this email. This link is valid for <strong>15 minutes</strong>.
+        </p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{link}" style="background-color: #111111; color: #ffffff; padding: 14px 28px; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 6px; display: inline-block;">Reset Password</a>
+        </div>
+        <div style="background-color: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 6px; margin: 20px 0;">
+            <p style="color: #dc2626; font-size: 14px; font-weight: 600; margin: 0 0 5px 0;">Security Warning</p>
+            <p style="color: #991b1b; font-size: 13px; line-height: 1.5; margin: 0;">If you did not request a password reset, someone may be trying to access your account. Do not click the link and consider updating your security settings.</p>
+        </div>
     </div>
     """
     send_email(email, "BankNova AI Password Reset", html)

@@ -308,16 +308,25 @@ else:
     
     st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
     st.sidebar.divider()
+    
+    # Use real Streamlit buttons for logout
     st.sidebar.markdown("""
-        <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-            <div style="background-color: #333; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">A</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="background-color: #333; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">U</div>
             <div style="line-height: 1.2;">
-                <div style="color: white; font-size: 13px; font-weight: 600;">aaishwaryalala13</div>
-                <div style="color: #666; font-size: 10px;">aaishwaryalala13@gmail.com</div>
+                <div style="color: white; font-size: 13px; font-weight: 600;">My Account</div>
             </div>
         </div>
-        <div style="margin-top: 10px; color: #888; font-size: 12px; cursor: pointer;" onclick="alert('Logging out...')">↪ Log out</div>
     """, unsafe_allow_html=True)
+    
+    if st.sidebar.button("↪ Log out", type="tertiary", use_container_width=True):
+        try:
+            requests.post("http://localhost:8000/auth/logout")
+        except:
+            pass
+        st.session_state.logged_in = False
+        st.session_state.access_token = None
+        st.rerun()
     
     # ---------------- DASHBOARD (HOME) ----------------
     if page == "📊 Dashboard":

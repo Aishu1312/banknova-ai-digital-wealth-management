@@ -13,6 +13,8 @@ class User(Base):
     verification_token = Column(String, nullable=True)
     failed_login_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime, nullable=True)
+    auth_provider = Column(String, default="local")
+    avatar_url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 class RefreshToken(Base):

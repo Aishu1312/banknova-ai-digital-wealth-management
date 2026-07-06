@@ -12,14 +12,26 @@ import datetime
 import secrets
 import os
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import RedirectResponse
 from authlib.integrations.starlette_client import OAuth
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['Content-Security-Policy'] = "default-src 'self'"
+        return response
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SecurityHeadersMiddleware)
 
 # OAuth needs session middleware
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET_KEY", secrets.token_urlsafe(32)))
@@ -59,6 +71,9 @@ class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
+
+class ResendVerification(BaseModel):
+    email: EmailStr
 
 class ForgotPassword(BaseModel):
     email: EmailStr
@@ -126,7 +141,16 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db
     db.add(db_refresh)
     db.commit()
     
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+    response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    response.set_cookie(
+        key="refresh_token", 
+        value=refresh_token, 
+        httponly=True, 
+        secure=True, 
+        samesite="lax", 
+        max_age=7*24*60*60
+    )
+    return response
 
 @app.post("/auth/forgot-password")
 @limiter.limit("3/minute")
@@ -172,15 +196,60 @@ def verify_email(token: str, db: Session = Depends(database.get_db)):
     db.commit()
     return {"message": "Email verified successfully"}
 
+@app.post("/auth/resend-verification")
+@limiter.limit("3/minute")
+def resend_verification(request: Request, payload: ResendVerification, db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.email == payload.email).first()
+    if not user:
+        return {"message": "If an account exists, a verification email has been sent."}
+    
+    if user.is_verified:
+        raise HTTPException(status_code=400, detail="Account is already verified.")
+        
+    verification_token = secrets.token_urlsafe(32)
+    user.verification_token = verification_token
+    db.commit()
+    auth_utils.send_verification_email(user.email, verification_token)
+    return {"message": "If an account exists, a verification email has been sent."}
+
 @app.post("/auth/refresh")
-def refresh_token(payload: RefreshTokenReq, db: Session = Depends(database.get_db)):
-    db_token = db.query(models.RefreshToken).filter(models.RefreshToken.token == payload.refresh_token).first()
+def refresh_token(request: Request, db: Session = Depends(database.get_db)):
+    token = request.cookies.get("refresh_token")
+    if not token:
+        # Fallback to payload for testing/streamlit
+        data = request.json() if request.method == "POST" else {}
+        token = data.get("refresh_token") if isinstance(data, dict) else None
+        
+    if not token:
+        raise HTTPException(status_code=401, detail="Refresh token missing")
+        
+    db_token = db.query(models.RefreshToken).filter(models.RefreshToken.token == token).first()
     if not db_token or db_token.expires_at < datetime.datetime.utcnow():
         raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
         
     user = db.query(models.User).filter(models.User.id == db_token.user_id).first()
     access_token = auth_utils.create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/auth/logout")
+def logout(request: Request, response: Response, db: Session = Depends(database.get_db)):
+    token = request.cookies.get("refresh_token")
+    if token:
+        db.query(models.RefreshToken).filter(models.RefreshToken.token == token).delete()
+        db.commit()
+    response = JSONResponse(content={"message": "Logged out successfully."})
+    response.delete_cookie("refresh_token")
+    return response
+
+@app.post("/auth/logout-all")
+def logout_all(request: Request, response: Response, email: str, db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if user:
+        db.query(models.RefreshToken).filter(models.RefreshToken.user_id == user.id).delete()
+        db.commit()
+    response = JSONResponse(content={"message": "Logged out of all devices."})
+    response.delete_cookie("refresh_token")
+    return response
 
 @app.get("/auth/login/{provider}")
 async def login_via_oauth(provider: str, request: Request):
@@ -207,7 +276,9 @@ async def auth_callback(provider: str, request: Request, db: Session = Depends(d
             emails = resp.json()
             email = next((e['email'] for e in emails if e.get('primary')), emails[0]['email'])
             resp_prof = await client.get('user', token=token)
-            name = resp_prof.json().get('name') or "User"
+            prof_data = resp_prof.json()
+            name = prof_data.get('name') or "User"
+            avatar = prof_data.get('avatar_url')
             
         if not email:
             return RedirectResponse(url="http://localhost:8501/?error=NoEmailFound")
@@ -219,7 +290,9 @@ async def auth_callback(provider: str, request: Request, db: Session = Depends(d
                 name=name,
                 email=email,
                 hashed_password=auth_utils.get_password_hash(secrets.token_urlsafe(16)),
-                is_verified=True
+                is_verified=True,
+                auth_provider=provider,
+                avatar_url=avatar if provider == 'github' else user_info.get('picture')
             )
             db.add(user)
             db.commit()
@@ -233,7 +306,16 @@ async def auth_callback(provider: str, request: Request, db: Session = Depends(d
         db.add(db_refresh)
         db.commit()
         
-        return RedirectResponse(url=f"http://localhost:8501/?token={access_token}&refresh={refresh_token}")
+        response = RedirectResponse(url=f"http://localhost:8501/?token={access_token}")
+        response.set_cookie(
+            key="refresh_token", 
+            value=refresh_token, 
+            httponly=True, 
+            secure=True, 
+            samesite="lax", 
+            max_age=7*24*60*60
+        )
+        return response
         
     except Exception as e:
         return RedirectResponse(url="http://localhost:8501/?error=OAuthFailed")
