@@ -46,7 +46,7 @@ def ensure_backend_running():
     # Method 1: Try uv (if the user is using uv instead of standard pip)
     if shutil.which("uv"):
         process = subprocess.Popen(
-            ["uv", "run", "--with", "-r", "requirements.txt", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
+            ["uv", "run", "--with-requirements", "requirements.txt", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
