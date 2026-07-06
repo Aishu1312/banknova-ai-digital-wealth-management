@@ -11,13 +11,13 @@ logger = logging.getLogger(__name__)
 
 from data import (
     category_breakdown,
-    goals,
-    notifications,
-    portfolio_holdings,
-    risk_allocations,
-    suggestions_by_risk,
-    total_wealth,
-    transactions,
+    get_goals,
+    get_notifications,
+    get_portfolio_holdings,
+    get_risk_allocations,
+    get_suggestions_by_risk,
+    get_total_wealth,
+    get_transactions,
 )
 from chat_engine import get_response, suggestion_chips
 
@@ -48,8 +48,7 @@ if "quiz_step" not in st.session_state:
 if "quiz_score" not in st.session_state:
     st.session_state.quiz_score = 0
 if "goals" not in st.session_state:
-    import copy
-    st.session_state.goals = copy.deepcopy(goals)
+    st.session_state.goals = get_goals()
 
 if "auth_mode" not in st.session_state:
     st.session_state.auth_mode = None

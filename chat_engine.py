@@ -3,11 +3,11 @@
 from typing import List, Dict, Any, Union
 from data import (
     category_breakdown,
-    goals,
-    portfolio_holdings,
-    risk_allocations,
-    suggestions_by_risk,
-    total_wealth,
+    get_goals,
+    get_portfolio_holdings,
+    get_risk_allocations,
+    get_suggestions_by_risk,
+    get_total_wealth,
 )
 
 
@@ -34,6 +34,7 @@ def get_response(user_text: str, risk: str) -> str:
             return f"Your top spending category this month is **{top_cat}** at ₹{top_amount:,}."
 
     if any(k in text for k in ["goal", "retire", "home", "education"]):
+        goals = get_goals()
         if not goals:
             return "You haven't set any goals yet. Head to the Goals tab to create one."
         g = goals[0]
@@ -48,11 +49,13 @@ def get_response(user_text: str, risk: str) -> str:
         )
 
     if any(k in text for k in ["invest", "sip", "risk"]):
-        alloc = risk_allocations.get(risk)
+        risk_allocs = get_risk_allocations()
+        alloc = risk_allocs.get(risk)
         if not alloc:
             return f"I don't have allocation data for the {risk} profile."
         
-        picks = suggestions_by_risk.get(risk, [])[:2]
+        suggs = get_suggestions_by_risk()
+        picks = suggs.get(risk, [])[:2]
         picks_text = " and ".join(f"**{p['name']}** ({p['expected_return']})" for p in picks)
         return (
             f"Based on your **{risk}** risk profile, I suggest an allocation of "
@@ -61,12 +64,14 @@ def get_response(user_text: str, risk: str) -> str:
         )
 
     if any(k in text for k in ["portfolio", "net worth", "worth"]):
-        if not portfolio_holdings:
-            return f"Your total net worth across holdings is **₹{total_wealth:,}**."
+        holdings = get_portfolio_holdings()
+        wealth = get_total_wealth()
+        if not holdings:
+            return f"Your total net worth across holdings is **₹{wealth:,}**."
         
-        best = max(portfolio_holdings, key=lambda h: h["change"])
+        best = max(holdings, key=lambda h: h["change"])
         return (
-            f"Your total net worth across holdings is **₹{total_wealth:,}**. "
+            f"Your total net worth across holdings is **₹{wealth:,}**. "
             f"Your best performer is **{best['name']}**, up {best['change']}% this year."
         )
 
