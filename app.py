@@ -53,131 +53,14 @@ if "goals" not in st.session_state:
 if "auth_mode" not in st.session_state:
     st.session_state.auth_mode = None
 
-def render_auth_page(mode="signup"):
-    st.markdown("""
-        <style>
-            .block-container { max-width: 1200px !important; padding-top: 4rem !important; }
-            div[data-testid="stForm"] {
-                background-color: #111111;
-                border: 1px solid #222;
-                border-radius: 20px;
-                padding: 2.5rem 2.5rem;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-                margin: 0 auto 1rem auto;
-                max-width: 420px;
-            }
-            .auth-link-container {
-                display: flex;
-                justify-content: center;
-                max-width: 420px;
-                margin: 0 auto;
-            }
-            div[data-testid="stForm"] label p {
-                font-size: 11px !important;
-                letter-spacing: 1.5px !important;
-                color: #888 !important;
-                text-transform: uppercase !important;
-                font-weight: 600 !important;
-                margin-bottom: 2px !important;
-            }
-            div[data-testid="stForm"] input {
-                background-color: #1a1a1c !important;
-                border: 1px solid #333 !important;
-                color: white !important;
-                border-radius: 8px !important;
-                padding: 0.75rem 1rem !important;
-                font-size: 14px !important;
-            }
-            div[data-testid="stForm"] input:focus {
-                border-color: #f5b03e !important;
-                box-shadow: 0 0 0 1px #f5b03e !important;
-            }
-            div[data-testid="stFormSubmitButton"] {
-                margin-top: 1.5rem;
-            }
-            div[data-testid="stFormSubmitButton"] button {
-                background: linear-gradient(135deg, #fcd34d, #f59e0b) !important;
-                color: black !important;
-                font-weight: 700 !important;
-                font-size: 16px !important;
-                border: none !important;
-                width: 100% !important;
-                border-radius: 8px !important;
-                padding: 0.5rem !important;
-            }
-            div[data-testid="stFormSubmitButton"] button p {
-                font-size: 16px !important;
-                color: black !important;
-            }
-            /* Style the bottom link buttons */
-            div.stButton > button {
-                background: transparent !important;
-                border: none !important;
-                color: #888 !important;
-                font-size: 14px !important;
-                box-shadow: none !important;
-            }
-            div.stButton > button:hover {
-                color: #f5b03e !important;
-                background: transparent !important;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("""
-        <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 2rem;">
-            <div style="background: linear-gradient(135deg, #fcd34d, #f59e0b); color: black; font-weight: 800; font-size: 24px; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; border-radius: 12px; box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);">B</div>
-            <div style="line-height: 1.1;">
-                <div style="font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px;">BankNova <span style="color: #f5b03e;">AI</span></div>
-                <div style="font-size: 11px; color: #888; font-weight: 600; letter-spacing: 1.5px;">WEALTH OS</div>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    with st.form("auth_form", clear_on_submit=False):
-        if mode == "signup":
-            st.markdown("<h1 style='color: white; font-size: 28px; font-weight: 800; margin-bottom: 5px; line-height: 1;'>Create account</h1>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #888; font-size: 14px; margin-bottom: 25px;'>30 seconds. No card required.</p>", unsafe_allow_html=True)
-            
-            st.text_input("FULL NAME", placeholder="Aarav Sharma")
-            st.text_input("EMAIL", placeholder="you@example.com")
-            st.text_input("PASSWORD", placeholder="At least 6 characters", type="password")
-            
-            submitted = st.form_submit_button("Create account →")
-            if submitted:
-                st.session_state.logged_in = True
-                st.session_state.auth_mode = None
-                st.rerun()
-        else:
-            st.markdown("<h1 style='color: white; font-size: 28px; font-weight: 800; margin-bottom: 5px; line-height: 1;'>Welcome back</h1>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #888; font-size: 14px; margin-bottom: 25px;'>Sign in to your wealth OS.</p>", unsafe_allow_html=True)
-            
-            st.text_input("EMAIL", placeholder="you@example.com")
-            st.text_input("PASSWORD", placeholder="Your password", type="password")
-            
-            submitted = st.form_submit_button("Sign in →")
-            if submitted:
-                st.session_state.logged_in = True
-                st.session_state.auth_mode = None
-                st.rerun()
-                
-    st.markdown('<div class="auth-link-container">', unsafe_allow_html=True)
-    if mode == "signup":
-        if st.button("Already have an account? Sign in", use_container_width=True):
-            st.session_state.auth_mode = "login"
-            st.rerun()
-    else:
-        if st.button("New to BankNova? Create account", use_container_width=True):
-            st.session_state.auth_mode = "signup"
-            st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+import auth_ui
 
 # ==========================================
 # 1. LANDING PAGE
 # ==========================================
 if not st.session_state.logged_in:
     if st.session_state.auth_mode:
-        render_auth_page(st.session_state.auth_mode)
+        auth_ui.render()
         st.stop()
 
     # Set layout for landing page
