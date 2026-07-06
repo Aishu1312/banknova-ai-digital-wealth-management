@@ -32,7 +32,9 @@ def validate_password(password: str):
 def render():
     if "auth_mode" not in st.session_state:
         st.session_state.auth_mode = "login"
-    
+    if "reset_token" not in st.session_state:
+        st.session_state.reset_token = None
+        
     mode = st.session_state.auth_mode
     
     st.markdown("""
@@ -45,10 +47,8 @@ def render():
             .stTextInput>div>div>input:focus { border-color: #f5b03e !important; box-shadow: 0 0 0 1px #f5b03e !important; }
             .stButton>button { width: 100% !important; border-radius: 8px !important; padding: 0.75rem !important; font-weight: 600 !important; }
             .btn-primary>button { background: #f5b03e !important; color: black !important; border: none !important; }
-            .btn-social>button { background: transparent !important; color: white !important; border: 1px solid #333 !important; margin-bottom: 10px !important; }
-            .btn-social>button:hover { background: #1a1a1c !important; }
-            .link-text { color: #f5b03e; cursor: pointer; text-decoration: none; font-size: 14px; }
-            .link-text:hover { text-decoration: underline; }
+            .social-btn { display: block; text-align: center; background: transparent; color: white; border: 1px solid #333; border-radius: 8px; padding: 0.75rem; margin-bottom: 10px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; }
+            .social-btn:hover { background: #1a1a1c; border-color: #f5b03e; color: white; }
             .meter { height: 4px; border-radius: 2px; margin-top: 8px; transition: 0.3s; }
             .meter-Weak { background: #ef4444; width: 33%; }
             .meter-Medium { background: #f5b03e; width: 66%; }
@@ -67,11 +67,14 @@ def render():
         
         email = st.text_input("Email", placeholder="you@example.com", key="login_email")
         password = st.text_input("Password", type="password", key="login_pass")
-        remember = st.checkbox("Remember Me")
         
         col1, col2 = st.columns([1, 1])
+        with col1:
+            remember = st.checkbox("Remember Me")
         with col2:
-            st.markdown('<div style="text-align: right;"><a href="#" class="link-text">Forgot Password?</a></div>', unsafe_allow_html=True)
+            if st.button("Forgot Password?", type="tertiary", use_container_width=True):
+                st.session_state.auth_mode = "forgot"
+                st.rerun()
             
         if st.button("Sign In", type="primary"):
             if not email or not password:
@@ -93,9 +96,9 @@ def render():
                         st.error("Something went wrong. Please try again.")
                         
         st.markdown("<div style='text-align: center; margin: 1.5rem 0; color: #666;'>OR</div>", unsafe_allow_html=True)
-        st.button("Continue with Google", use_container_width=True)
-        st.button("Continue with Microsoft", use_container_width=True)
-        st.button("Continue with GitHub", use_container_width=True)
+        st.markdown(f'<a href="http://localhost:8000/auth/login/google" class="social-btn">Continue with Google</a>', unsafe_allow_html=True)
+        st.markdown(f'<a href="http://localhost:8000/auth/login/microsoft" class="social-btn">Continue with Microsoft</a>', unsafe_allow_html=True)
+        st.markdown(f'<a href="http://localhost:8000/auth/login/github" class="social-btn">Continue with GitHub</a>', unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("Create an account", type="secondary"):
@@ -144,4 +147,77 @@ def render():
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("Already have an account? Sign In", type="secondary"):
             st.session_state.auth_mode = "login"
+            st.rerun()
+            
+    elif mode == "forgot":
+        st.markdown('<div class="auth-title">Reset Password</div>', unsafe_allow_html=True)
+        st.markdown('<div class="auth-subtitle">Enter your email to receive a reset link</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        email = st.text_input("Email Address", placeholder="you@example.com", key="forgot_email")
+        
+        if st.button("Send Reset Link", type="primary"):
+            if not email:
+                st.error("Please enter your email address.")
+            else:
+                with st.spinner("Sending password reset link..."):
+                    try:
+                        res = requests.post(f"{API_URL}/forgot-password", json={"email": email})
+                        st.success("If an account exists for this email, a reset link has been sent.")
+                    except:
+                        st.error("Unable to connect. Please check your internet connection.")
+                        
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Back to Login", type="secondary"):
+            st.session_state.auth_mode = "login"
+            st.rerun()
+
+    elif mode == "reset":
+        st.markdown('<div class="auth-title">New Password</div>', unsafe_allow_html=True)
+        st.markdown('<div class="auth-subtitle">Create a strong new password</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        password = st.text_input("New Password", type="password", key="reset_pass")
+        confirm = st.text_input("Confirm Password", type="password", key="reset_pass_conf")
+        
+        strength = check_password_strength(password)
+        if strength:
+            color = "#ef4444" if strength == "Weak" else "#f5b03e" if strength == "Medium" else "#4ade80"
+            st.markdown(f"<div style='font-size: 12px; color: {color}; font-weight: 600; text-align: right;'>{strength}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='meter meter-{strength}'></div>", unsafe_allow_html=True)
+            
+        if password:
+            errors = validate_password(password)
+            for err in errors:
+                st.markdown(f"<div class='error-text'>• {err}</div>", unsafe_allow_html=True)
+                
+        if st.button("Reset Password", type="primary"):
+            if not password or not confirm:
+                st.error("Please fill in both fields.")
+            elif password != confirm:
+                st.error("Passwords do not match.")
+            elif validate_password(password):
+                st.error("Choose a stronger password.")
+            else:
+                with st.spinner("Updating password..."):
+                    try:
+                        res = requests.post(f"{API_URL}/reset-password", json={
+                            "token": st.session_state.reset_token,
+                            "new_password": password
+                        })
+                        if res.status_code == 200:
+                            st.success("Password changed successfully.")
+                            time.sleep(2)
+                            st.session_state.auth_mode = "login"
+                            st.session_state.reset_token = None
+                            st.rerun()
+                        else:
+                            st.error(res.json().get("detail", "Reset failed."))
+                    except:
+                        st.error("Something went wrong. Please try again later.")
+                        
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Cancel", type="secondary"):
+            st.session_state.auth_mode = "login"
+            st.session_state.reset_token = None
             st.rerun()

@@ -10,11 +10,48 @@ import models
 import auth_utils
 import datetime
 import secrets
+import os
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.responses import RedirectResponse
+from authlib.integrations.starlette_client import OAuth
+from fastapi.responses import JSONResponse
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# OAuth needs session middleware
+app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET_KEY", secrets.token_urlsafe(32)))
+
+oauth = OAuth()
+oauth.register(
+    name='google',
+    client_id=os.environ.get('GOOGLE_CLIENT_ID'),
+    client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={'scope': 'openid email profile'}
+)
+
+oauth.register(
+    name='github',
+    client_id=os.environ.get('GITHUB_CLIENT_ID'),
+    client_secret=os.environ.get('GITHUB_CLIENT_SECRET'),
+    access_token_url='https://github.com/login/oauth/access_token',
+    access_token_params=None,
+    authorize_url='https://github.com/login/oauth/authorize',
+    authorize_params=None,
+    api_base_url='https://api.github.com/',
+    client_kwargs={'scope': 'user:email'}
+)
+
+oauth.register(
+    name='microsoft',
+    client_id=os.environ.get('MICROSOFT_CLIENT_ID'),
+    client_secret=os.environ.get('MICROSOFT_CLIENT_SECRET'),
+    server_metadata_url='https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
+    client_kwargs={'scope': 'openid email profile'}
+)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -144,3 +181,60 @@ def refresh_token(payload: RefreshTokenReq, db: Session = Depends(database.get_d
     user = db.query(models.User).filter(models.User.id == db_token.user_id).first()
     access_token = auth_utils.create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/auth/login/{provider}")
+async def login_via_oauth(provider: str, request: Request):
+    if provider not in ["google", "github", "microsoft"]:
+        raise HTTPException(status_code=400, detail="Unsupported provider")
+    redirect_uri = f"http://localhost:8000/auth/callback/{provider}"
+    client = oauth.create_client(provider)
+    return await client.authorize_redirect(request, redirect_uri)
+
+@app.get("/auth/callback/{provider}")
+async def auth_callback(provider: str, request: Request, db: Session = Depends(database.get_db)):
+    try:
+        client = oauth.create_client(provider)
+        token = await client.authorize_access_token(request)
+        
+        if provider == "google" or provider == "microsoft":
+            user_info = token.get('userinfo')
+            if not user_info:
+                user_info = await client.parse_id_token(request, token)
+            email = user_info.get("email")
+            name = user_info.get("name", "User")
+        elif provider == "github":
+            resp = await client.get('user/emails', token=token)
+            emails = resp.json()
+            email = next((e['email'] for e in emails if e.get('primary')), emails[0]['email'])
+            resp_prof = await client.get('user', token=token)
+            name = resp_prof.json().get('name') or "User"
+            
+        if not email:
+            return RedirectResponse(url="http://localhost:8501/?error=NoEmailFound")
+            
+        user = db.query(models.User).filter(models.User.email == email).first()
+        if not user:
+            # Create user for OAuth automatically verified
+            user = models.User(
+                name=name,
+                email=email,
+                hashed_password=auth_utils.get_password_hash(secrets.token_urlsafe(16)),
+                is_verified=True
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            
+        # Generate our own JWT
+        access_token = auth_utils.create_access_token(data={"sub": user.email})
+        refresh_token = auth_utils.create_refresh_token(data={"sub": user.email})
+        
+        db_refresh = models.RefreshToken(user_id=user.id, token=refresh_token, expires_at=datetime.datetime.utcnow() + datetime.timedelta(days=7))
+        db.add(db_refresh)
+        db.commit()
+        
+        return RedirectResponse(url=f"http://localhost:8501/?token={access_token}&refresh={refresh_token}")
+        
+    except Exception as e:
+        return RedirectResponse(url="http://localhost:8501/?error=OAuthFailed")
+

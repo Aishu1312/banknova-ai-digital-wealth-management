@@ -63,6 +63,33 @@ if "auth_mode" not in st.session_state:
     st.session_state.auth_mode = None
 
 import auth_ui
+import requests
+
+# --- Handle OAuth / Email Callbacks ---
+if "token" in st.query_params:
+    st.session_state.access_token = st.query_params["token"]
+    st.session_state.logged_in = True
+    st.query_params.clear()
+
+if "reset" in st.query_params:
+    st.session_state.auth_mode = "reset"
+    st.session_state.reset_token = st.query_params["reset"]
+    st.query_params.clear()
+
+if "verify" in st.query_params:
+    try:
+        res = requests.post(f"http://localhost:8000/auth/verify-email?token={st.query_params['verify']}")
+        if res.status_code == 200:
+            st.toast("Email verified successfully! You can now log in.", icon="✅")
+        else:
+            st.toast("Verification failed or link expired.", icon="❌")
+    except:
+        pass
+    st.query_params.clear()
+
+if "error" in st.query_params:
+    st.toast(f"Error: {st.query_params['error']}", icon="⚠️")
+    st.query_params.clear()
 
 # ==========================================
 # 1. LANDING PAGE
