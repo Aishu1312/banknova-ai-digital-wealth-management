@@ -24,8 +24,8 @@ def ensure_backend_running():
     import subprocess
     import time
     
-    # Do not auto-start on Streamlit Community Cloud or Production
-    if os.environ.get("STREAMLIT_SERVER_PORT") or os.environ.get("ENVIRONMENT") == "production":
+    # Do not auto-start in explicitly configured Production environments
+    if os.environ.get("ENVIRONMENT") == "production":
         st.session_state.backend_checked = True
         return
         

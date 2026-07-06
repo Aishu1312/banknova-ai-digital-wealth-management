@@ -46,7 +46,7 @@ def trigger_oauth(provider):
     # Fast check if backend is online before redirecting browser
     try:
         session = get_api_session()
-        session.get(f"{BACKEND_URL}/health", timeout=1)
+        session.get(f"{BACKEND_URL}/health", timeout=3)
     except:
         st.error(f"Cannot connect to backend to login with {provider.title()}. Please ensure the backend is running at {BACKEND_URL}.")
         return
@@ -197,7 +197,7 @@ def render():
                 with st.spinner("Authenticating..."):
                     try:
                         session = get_api_session()
-                        res = session.post(f"{API_URL}/login", data={"username": email, "password": password}, timeout=2)
+                        res = session.post(f"{API_URL}/login", data={"username": email, "password": password}, timeout=5)
                         if res.status_code == 200:
                             data = res.json()
                             st.session_state.access_token = data["access_token"]
@@ -267,7 +267,7 @@ def render():
                 with st.spinner("Creating account..."):
                     try:
                         session = get_api_session()
-                        res = session.post(f"{API_URL}/register", json={"name": name, "email": email, "password": password}, timeout=2)
+                        res = session.post(f"{API_URL}/register", json={"name": name, "email": email, "password": password}, timeout=5)
                         if res.status_code == 200:
                             st.toast("Account created successfully! Please check your email.", icon="✅")
                             st.session_state.auth_mode = "login"
@@ -300,7 +300,7 @@ def render():
             with st.spinner("Sending..."):
                 try:
                     session = get_api_session()
-                    res = session.post(f"{API_URL}/resend-verification", json={"email": email}, timeout=2)
+                    res = session.post(f"{API_URL}/resend-verification", json={"email": email}, timeout=5)
                     st.success("Verification email sent! Please check your inbox.")
                 except requests.exceptions.ConnectionError:
                     st.session_state.reconnecting = True
@@ -328,7 +328,7 @@ def render():
                 with st.spinner("Sending password reset link..."):
                     try:
                         session = get_api_session()
-                        res = session.post(f"{API_URL}/forgot-password", json={"email": email}, timeout=2)
+                        res = session.post(f"{API_URL}/forgot-password", json={"email": email}, timeout=5)
                         if res.status_code == 200:
                             data = res.json()
                             st.success(data.get("message", "Reset link sent."))
@@ -385,7 +385,7 @@ def render():
                         res = session.post(f"{API_URL}/reset-password", json={
                             "token": st.session_state.reset_token,
                             "new_password": password
-                        }, timeout=2)
+                        }, timeout=5)
                         if res.status_code == 200:
                             st.success("Password changed successfully.")
                             time.sleep(2)
