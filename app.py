@@ -17,6 +17,10 @@ API_URL = os.environ.get("API_URL", "http://127.0.0.1:8000")
 @st.cache_resource
 def ensure_backend_running():
     import sys
+    import os
+    import shutil
+    import subprocess
+    import time
     if "127.0.0.1" not in API_URL and "localhost" not in API_URL:
         return
     try:
@@ -25,23 +29,43 @@ def ensure_backend_running():
     except:
         pass
     
-    # Try to install dependencies silently and start the server
-    subprocess.run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"], capture_output=True)
+    st.toast("Starting local backend server... This may take 15 seconds.", icon="⏳")
     
-    process = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
-    
-    for _ in range(10):
+    # Method 1: Try uv (if the user is using uv instead of standard pip)
+    if shutil.which("uv"):
+        process = subprocess.Popen(
+            ["uv", "run", "--with", "-r", "requirements.txt", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+    # Method 2: Try standard python
+    elif shutil.which("python"):
+        subprocess.run(["python", "-m", "pip", "install", "-r", "requirements.txt"], capture_output=True)
+        process = subprocess.Popen(
+            ["python", "-m", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+    # Method 3: Fallback to sys.executable
+    else:
+        subprocess.run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"], capture_output=True)
+        process = subprocess.Popen(
+            [sys.executable, "-m", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        
+    for _ in range(20):
         time.sleep(1)
         try:
             if requests.get(f"{API_URL}/health", timeout=1).status_code == 200:
+                st.toast("Backend server online!", icon="✅")
                 return process
         except:
             pass
-    return process
+            
+    st.toast("Failed to start backend server. Please run 'uvicorn api:app' manually.", icon="❌")
+    return None
 
 # Ensure backend is running before rendering UI
 ensure_backend_running()
