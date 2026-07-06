@@ -9,7 +9,8 @@ import streamlit.components.v1 as components
 @st.cache_resource
 def get_api_session():
     session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=0.5, status_forcelist=[500, 502, 503, 504])
+    # Use 0 connect retries so we fail FAST if backend is completely offline
+    retry = Retry(connect=0, read=2, backoff_factor=0.2, status_forcelist=[500, 502, 503, 504])
     adapter = HTTPAdapter(max_retries=retry, pool_connections=10, pool_maxsize=10)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
@@ -40,6 +41,14 @@ def validate_password(password: str):
     return errors
 
 def trigger_oauth(provider):
+    # Fast check if backend is online before redirecting browser
+    try:
+        session = get_api_session()
+        session.get("http://127.0.0.1:8000/health", timeout=1)
+    except:
+        st.error(f"Cannot connect to backend to login with {provider.title()}. Please ensure the backend is running.")
+        return
+        
     st.session_state[f'loading_{provider}'] = True
     js = f"""
     <script>
@@ -165,7 +174,7 @@ def render():
                 with st.spinner("Authenticating..."):
                     try:
                         session = get_api_session()
-                        res = session.post(f"{API_URL}/login", data={"username": email, "password": password}, timeout=5)
+                        res = session.post(f"{API_URL}/login", data={"username": email, "password": password}, timeout=2)
                         if res.status_code == 200:
                             data = res.json()
                             st.session_state.access_token = data["access_token"]
@@ -240,7 +249,7 @@ def render():
                 with st.spinner("Creating account..."):
                     try:
                         session = get_api_session()
-                        res = session.post(f"{API_URL}/register", json={"name": name, "email": email, "password": password}, timeout=5)
+                        res = session.post(f"{API_URL}/register", json={"name": name, "email": email, "password": password}, timeout=2)
                         if res.status_code == 200:
                             st.success("Account created! Please check your email to verify.")
                             time.sleep(2)
@@ -272,7 +281,7 @@ def render():
             with st.spinner("Sending..."):
                 try:
                     session = get_api_session()
-                    res = session.post(f"{API_URL}/resend-verification", json={"email": email}, timeout=5)
+                    res = session.post(f"{API_URL}/resend-verification", json={"email": email}, timeout=2)
                     st.success("Verification email sent! Please check your inbox.")
                 except requests.exceptions.ConnectionError:
                     st.error("Backend Offline: Unable to connect.")
@@ -298,7 +307,7 @@ def render():
                 with st.spinner("Sending password reset link..."):
                     try:
                         session = get_api_session()
-                        res = session.post(f"{API_URL}/forgot-password", json={"email": email}, timeout=5)
+                        res = session.post(f"{API_URL}/forgot-password", json={"email": email}, timeout=2)
                         if res.status_code == 200:
                             data = res.json()
                             st.success(data.get("message", "Reset link sent."))
@@ -353,7 +362,7 @@ def render():
                         res = session.post(f"{API_URL}/reset-password", json={
                             "token": st.session_state.reset_token,
                             "new_password": password
-                        }, timeout=5)
+                        }, timeout=2)
                         if res.status_code == 200:
                             st.success("Password changed successfully.")
                             time.sleep(2)
