@@ -52,7 +52,14 @@ def trigger_oauth(provider):
         return
         
     st.session_state[f"loading_{provider}"] = True
-    st.rerun()
+    js = f"""
+    <script>
+        setTimeout(function() {{
+            window.parent.location.href = '{API_URL}/login/{provider}';
+        }}, 800);
+    </script>
+    """
+    components.html(js, height=0)
 
 def render_auth_ui():
     # Exponential Backoff Reconnection Logic
