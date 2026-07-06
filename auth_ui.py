@@ -7,7 +7,7 @@ import time
 import streamlit.components.v1 as components
 import os
 
-BACKEND_URL = os.environ.get("API_URL", "http://127.0.0.1:8000")
+BACKEND_URL = os.environ.get("API_BASE_URL", "http://127.0.0.1:8000")
 API_URL = f"{BACKEND_URL}/auth"
 
 @st.cache_resource
@@ -48,18 +48,39 @@ def trigger_oauth(provider):
         session = get_api_session()
         session.get(f"{BACKEND_URL}/health", timeout=1)
     except:
-        st.error(f"Cannot connect to backend to login with {provider.title()}. Please ensure the backend is running.")
+        st.error(f"Cannot connect to backend to login with {provider.title()}. Please ensure the backend is running at {BACKEND_URL}.")
         return
         
-    st.session_state[f'loading_{provider}'] = True
-    js = f"""
-    <script>
-        setTimeout(function() {{
-            window.parent.location.href = '{API_URL}/login/{provider}';
-        }}, 800);
-    </script>
-    """
-    components.html(js, height=0)
+    st.session_state[f"loading_{provider}"] = True
+    st.rerun()
+
+def render_auth_ui():
+    # Exponential Backoff Reconnection Logic
+    if st.session_state.get("reconnecting"):
+        attempts = st.session_state.get("reconnect_attempts", 1)
+        st.warning(f"Backend service is currently unavailable. Attempting automatic reconnection... (Attempt {attempts}/5)")
+        
+        try:
+            session = get_api_session()
+            if session.get(f"{BACKEND_URL}/health", timeout=2).status_code == 200:
+                st.session_state.reconnecting = False
+                st.session_state.reconnect_attempts = 0
+                st.success("Reconnected successfully!")
+                time.sleep(1)
+                st.rerun()
+        except:
+            if attempts < 5:
+                time.sleep(min(2 ** attempts, 5))  # Exponential backoff
+                st.session_state.reconnect_attempts = attempts + 1
+                st.rerun()
+            else:
+                st.error(f"Backend connection failed after 5 attempts. Please verify API_BASE_URL ({BACKEND_URL}).")
+                st.session_state.reconnecting = False
+                if st.button("Try Again"):
+                    st.session_state.reconnecting = True
+                    st.session_state.reconnect_attempts = 1
+                    st.rerun()
+                return
 
 def render():
     if "auth_mode" not in st.session_state:
@@ -193,7 +214,9 @@ def render():
                     except requests.exceptions.Timeout:
                         st.error("The request timed out. Please try again.")
                     except requests.exceptions.ConnectionError:
-                        st.error("Backend Offline: Server unavailable. Attempting reconnection...")
+                        st.session_state.reconnecting = True
+                        st.session_state.reconnect_attempts = 1
+                        st.rerun()
                     except Exception as e:
                         st.error("Network Error: Please check your internet connection.")
                         
@@ -254,7 +277,9 @@ def render():
                     except requests.exceptions.Timeout:
                         st.error("The request timed out. Please try again.")
                     except requests.exceptions.ConnectionError:
-                        st.error("Backend Offline: Server unavailable.")
+                        st.session_state.reconnecting = True
+                        st.session_state.reconnect_attempts = 1
+                        st.rerun()
                     except Exception:
                         st.error("Something went wrong. Please try again later.")
                         
@@ -278,7 +303,9 @@ def render():
                     res = session.post(f"{API_URL}/resend-verification", json={"email": email}, timeout=2)
                     st.success("Verification email sent! Please check your inbox.")
                 except requests.exceptions.ConnectionError:
-                    st.error("Backend Offline: Unable to connect.")
+                    st.session_state.reconnecting = True
+                    st.session_state.reconnect_attempts = 1
+                    st.rerun()
                 except Exception:
                     st.error("Unable to connect. Please try again.")
         
@@ -312,7 +339,9 @@ def render():
                     except requests.exceptions.Timeout:
                         st.error("The request timed out. Please try again.")
                     except requests.exceptions.ConnectionError:
-                        st.error("Backend Offline: Server unavailable.")
+                        st.session_state.reconnecting = True
+                        st.session_state.reconnect_attempts = 1
+                        st.rerun()
                     except Exception:
                         st.error("An unexpected error occurred while connecting.")
                         

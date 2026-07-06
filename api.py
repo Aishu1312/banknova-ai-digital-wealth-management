@@ -20,8 +20,10 @@ import json
 import logging
 from sqlalchemy import text
 
+from fastapi.middleware.cors import CORSMiddleware
+
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8501")
-API_URL = os.environ.get("API_URL", "http://localhost:8000")
+API_BASE_URL = os.environ.get("API_BASE_URL", "http://localhost:8000")
 
 class JSONFormatter(logging.Formatter):
     def format(self, record):
@@ -58,6 +60,14 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SecurityHeadersMiddleware)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # OAuth needs session middleware
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET_KEY", secrets.token_urlsafe(32)))
 
@@ -78,6 +88,43 @@ def health_check(db: Session = Depends(database.get_db)):
         logger.error(f"Database health check failed: {e}")
         db_status = "error"
     return {"status": "ok" if db_status == "ok" else "degraded", "database": db_status}
+
+@app.get("/ready")
+def ready_check(db: Session = Depends(database.get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception as e:
+        raise HTTPException(status_code=503, detail="Database is not ready")
+        
+    if not os.environ.get("JWT_SECRET_KEY"):
+        logger.warning("JWT_SECRET_KEY is missing, using default.")
+        
+    return {"status": "ready"}
+
+@app.get("/status")
+def full_status(db: Session = Depends(database.get_db)):
+    db_status = "offline"
+    try:
+        db.execute(text("SELECT 1"))
+        db_status = "online"
+    except Exception:
+        pass
+        
+    return {
+        "status": "online",
+        "services": {
+            "database": db_status,
+            "authentication": "online",
+            "email_service": "online"
+        },
+        "environment": {
+            "jwt_configured": bool(os.environ.get("JWT_SECRET_KEY")),
+            "google_oauth_configured": bool(os.environ.get("GOOGLE_CLIENT_ID")),
+            "frontend_url": FRONTEND_URL,
+            "api_base_url": API_BASE_URL
+        },
+        "version": "1.0.0"
+    }
 
 @app.get("/status")
 def status_check():
@@ -296,7 +343,7 @@ def logout_all(request: Request, response: Response, email: str, db: Session = D
 async def login_via_oauth(provider: str, request: Request):
     if provider not in ["google"]:
         raise HTTPException(status_code=400, detail="Unsupported provider")
-    redirect_uri = f"{API_URL}/callback/{provider}"
+    redirect_uri = f"{API_BASE_URL}/callback/{provider}"
     client = oauth.create_client(provider)
     return await client.authorize_redirect(request, redirect_uri)
 

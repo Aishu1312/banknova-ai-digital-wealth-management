@@ -12,7 +12,7 @@ import subprocess
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-API_URL = os.environ.get("API_URL", "http://127.0.0.1:8000")
+API_BASE_URL = os.environ.get("API_BASE_URL", "http://127.0.0.1:8000")
 
 def ensure_backend_running():
     if st.session_state.get("backend_checked"):
@@ -23,11 +23,17 @@ def ensure_backend_running():
     import shutil
     import subprocess
     import time
-    if "127.0.0.1" not in API_URL and "localhost" not in API_URL:
+    
+    # Do not auto-start on Streamlit Community Cloud or Production
+    if os.environ.get("STREAMLIT_SERVER_PORT") or os.environ.get("ENVIRONMENT") == "production":
+        st.session_state.backend_checked = True
+        return
+        
+    if "127.0.0.1" not in API_BASE_URL and "localhost" not in API_BASE_URL:
         st.session_state.backend_checked = True
         return
     try:
-        if requests.get(f"{API_URL}/health", timeout=1).status_code == 200:
+        if requests.get(f"{API_BASE_URL}/health", timeout=1).status_code == 200:
             st.session_state.backend_checked = True
             return
     except:
@@ -64,7 +70,7 @@ def ensure_backend_running():
     for _ in range(20):
         time.sleep(1)
         try:
-            if requests.get(f"{API_URL}/health", timeout=1).status_code == 200:
+            if requests.get(f"{API_BASE_URL}/health", timeout=1).status_code == 200:
                 st.toast("Backend server online!", icon="✅")
                 return True
         except:
@@ -146,7 +152,7 @@ if "reset" in st.query_params:
 if "verify" in st.query_params:
     try:
         session = auth_ui.get_api_session()
-        res = session.post(f"{API_URL}/auth/verify-email?token={st.query_params['verify']}", timeout=5)
+        res = session.post(f"{API_BASE_URL}/auth/verify-email?token={st.query_params['verify']}", timeout=5)
         if res.status_code == 200:
             st.toast("Email verified successfully! You can now log in.", icon="✅")
         else:
@@ -390,7 +396,7 @@ else:
     if st.sidebar.button("↪ Log out", type="tertiary", use_container_width=True):
         try:
             session = auth_ui.get_api_session()
-            session.post(f"{API_URL}/auth/logout", timeout=5)
+            session.post(f"{API_BASE_URL}/auth/logout", timeout=5)
         except:
             pass
         st.session_state.logged_in = False
