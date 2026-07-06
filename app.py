@@ -12,25 +12,41 @@ import requests
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
+import sys
+
 @st.cache_resource
 def ensure_backend_running():
     """Automatically start the FastAPI backend if it's not running."""
     try:
         # Check if already running
-        requests.get("http://127.0.0.1:8000/health", timeout=1)
-        logger.info("Backend is already running.")
-        return True
+        res = requests.get("http://127.0.0.1:8000/health", timeout=1)
+        if res.status_code == 200:
+            logger.info("Backend is already running.")
+            return True
     except:
-        logger.info("Starting FastAPI backend automatically...")
-        # Start the backend in a subprocess
-        process = subprocess.Popen(
-            ["uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
-        # Give it a couple of seconds to spin up
-        time.sleep(2)
-        return process
+        pass
+        
+    logger.info("Starting FastAPI backend automatically...")
+    # Start the backend in a subprocess using the current Python executable
+    process = subprocess.Popen(
+        [sys.executable, "-m", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+    
+    # Poll for up to 10 seconds to ensure it starts
+    for _ in range(10):
+        time.sleep(1)
+        try:
+            res = requests.get("http://127.0.0.1:8000/health", timeout=1)
+            if res.status_code == 200:
+                logger.info("Backend started successfully.")
+                return process
+        except:
+            pass
+            
+    logger.error("Backend failed to respond within 10 seconds.")
+    return process
 
 # Ensure backend starts up
 ensure_backend_running()
