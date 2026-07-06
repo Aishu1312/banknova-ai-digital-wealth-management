@@ -60,12 +60,12 @@ def ensure_backend_running():
         try:
             if requests.get(f"{API_URL}/health", timeout=1).status_code == 200:
                 st.toast("Backend server online!", icon="✅")
-                return process
+                return True
         except:
             pass
             
     st.toast("Failed to start backend server. Please run 'uvicorn api:app' manually.", icon="❌")
-    return None
+    return False
 
 # Ensure backend is running before rendering UI
 ensure_backend_running()
