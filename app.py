@@ -4,10 +4,36 @@ import pandas as pd
 import plotly.graph_objects as go
 import logging
 import os
+import subprocess
+import time
+import requests
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
+
+@st.cache_resource
+def ensure_backend_running():
+    """Automatically start the FastAPI backend if it's not running."""
+    try:
+        # Check if already running
+        requests.get("http://127.0.0.1:8000/health", timeout=1)
+        logger.info("Backend is already running.")
+        return True
+    except:
+        logger.info("Starting FastAPI backend automatically...")
+        # Start the backend in a subprocess
+        process = subprocess.Popen(
+            ["uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        # Give it a couple of seconds to spin up
+        time.sleep(2)
+        return process
+
+# Ensure backend starts up
+ensure_backend_running()
 
 # Auto-seed the database if it doesn't exist and we're using SQLite
 if os.environ.get("DATABASE_URL", "sqlite").startswith("sqlite") and not os.path.exists("./banknova.db"):
