@@ -9,6 +9,15 @@ import os
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
+# Auto-seed the database if it doesn't exist and we're using SQLite
+if os.environ.get("DATABASE_URL", "sqlite").startswith("sqlite") and not os.path.exists("./banknova.db"):
+    try:
+        import seed_db
+        seed_db.seed()
+        logger.info("Auto-seeded SQLite database successfully.")
+    except Exception as e:
+        logger.error(f"Error auto-seeding database: {e}")
+
 from data import (
     category_breakdown,
     get_goals,
