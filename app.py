@@ -129,8 +129,6 @@ if "quiz_step" not in st.session_state:
     st.session_state.quiz_step = 0
 if "quiz_score" not in st.session_state:
     st.session_state.quiz_score = 0
-if "goals" not in st.session_state:
-    st.session_state.goals = get_goals()
 
 if "auth_mode" not in st.session_state:
     st.session_state.auth_mode = None
@@ -318,6 +316,39 @@ if not st.session_state.logged_in:
 # 2. DASHBOARD
 # ==========================================
 else:
+    # -----------------------------------------------------------------
+    # FIX: data.py functions (get_goals, get_portfolio_holdings, etc.)
+    # now REQUIRE a user_id -- they used to run unfiltered and leak every
+    # user's data to every session. app.py used to call get_goals() with
+    # no arguments at all, which now raises a TypeError and crashes the
+    # app on load. Resolve the logged-in user's id via /auth/me (using
+    # the same authenticated session auth_ui already sets up for us) and
+    # cache it in session_state, then use it for any user-scoped data.py
+    # calls instead of calling those functions unscoped.
+    # -----------------------------------------------------------------
+    if "user_id" not in st.session_state:
+        try:
+            session = auth_ui.get_api_session()
+            me_res = session.get(f"{API_BASE_URL}/auth/me", timeout=5)
+            if me_res.status_code == 200:
+                st.session_state.user_id = me_res.json()["id"]
+            else:
+                # Access token invalid/expired -- send back to login instead
+                # of crashing on a missing user_id.
+                st.session_state.logged_in = False
+                st.session_state.access_token = None
+                st.toast("Your session expired. Please log in again.", icon="⚠️")
+                st.rerun()
+        except Exception as e:
+            logger.error(f"Failed to resolve current user: {e}")
+            st.session_state.logged_in = False
+            st.session_state.access_token = None
+            st.toast("Could not verify your session. Please log in again.", icon="⚠️")
+            st.rerun()
+
+    if "goals" not in st.session_state:
+        st.session_state.goals = get_goals(st.session_state.user_id)
+
     # Reset layout CSS that might have leaked from the Auth/Landing page
     st.markdown("""
         <style>
@@ -1245,4 +1276,3 @@ else:
     else:
         st.header(f"Page: {page}")
         st.info("This section is under construction.")
-
