@@ -420,7 +420,7 @@ async def login_via_oauth(provider: str, request: Request):
     if provider not in ["google"]:
         raise HTTPException(status_code=400, detail="Unsupported provider")
 
-    redirect_uri = f"{API_BASE_URL}/callback/{provider}"
+    redirect_uri = f"{API_BASE_URL}/auth/callback/{provider}"
     client = oauth.create_client(provider)
     return await client.authorize_redirect(request, redirect_uri)
 
