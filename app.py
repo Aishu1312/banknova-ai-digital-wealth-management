@@ -139,11 +139,54 @@ if "auth_mode" not in st.session_state:
 import auth_ui
 import requests
 
+# --- Auto-Restore Session from LocalStorage on startup ---
+if not st.session_state.logged_in and "token" not in st.query_params:
+    components.html("""
+        <script>
+        try {
+            const token = localStorage.getItem("banknova_token");
+            if (token) {
+                const url = new URL(window.parent.location.href);
+                url.searchParams.set("token", token);
+                window.parent.location.href = url.toString();
+            }
+        } catch (e) {
+            console.error("Failed to restore token from localStorage:", e);
+        }
+        </script>
+    """, height=0, width=0)
+
 # --- Handle OAuth / Email Callbacks ---
 if "token" in st.query_params:
-    st.session_state.access_token = st.query_params["token"]
+    token = st.query_params["token"]
+    st.session_state.access_token = token
     st.session_state.logged_in = True
+    # Save token in localStorage and clear query params to keep URL clean
+    components.html("""
+        <script>
+        try {
+            localStorage.setItem("banknova_token", "{token}");
+        } catch (e) {
+            console.error("Failed to save token to localStorage:", e);
+        }
+        </script>
+    """.replace("{token}", token), height=0, width=0)
     st.query_params.clear()
+
+# --- Sync form logins / other login states to LocalStorage ---
+if st.session_state.logged_in and "token_synced" not in st.session_state:
+    st.session_state.token_synced = True
+    token = st.session_state.get("access_token", "")
+    if token:
+        components.html("""
+            <script>
+            try {
+                localStorage.setItem("banknova_token", "{token}");
+            } catch (e) {
+                console.error("Failed to sync token to localStorage:", e);
+            }
+            </script>
+        """.replace("{token}", token), height=0, width=0)
 
 if "reset" in st.query_params:
     st.session_state.auth_mode = "reset"
@@ -336,7 +379,10 @@ else:
                 session.headers.update({"Authorization": f"Bearer {st.session_state.access_token}"})
             me_res = session.get(f"{API_BASE_URL}/auth/me", timeout=5)
             if me_res.status_code == 200:
-                st.session_state.user_id = me_res.json()["id"]
+                user_data = me_res.json()
+                st.session_state.user_id = user_data["id"]
+                st.session_state.user_name = user_data["name"]
+                st.session_state.user_email = user_data["email"]
             else:
                 # Access token invalid/expired -- send back to login instead
                 # of crashing on a missing user_id.
@@ -350,6 +396,11 @@ else:
             st.session_state.access_token = None
             st.toast("Could not verify your session. Please log in again.", icon="⚠️")
             st.rerun()
+
+    if "user_name" not in st.session_state:
+        st.session_state.user_name = "User"
+    if "user_email" not in st.session_state:
+        st.session_state.user_email = "user@example.com"
 
     if "goals" not in st.session_state:
         st.session_state.goals = get_goals(st.session_state.user_id)
@@ -413,18 +464,20 @@ else:
     
     page = st.sidebar.radio(
         "",
-        ["📊 Dashboard", "💬 AI Advisor ᴬᴵ", "🎯 Goal Planner", "💼 Portfolio", "💸 Spending", "❤️ Health Score", "✨ AI Recommendations ᴬᴵ", "⚠️ Risk Predictor", "📄 Reports"]
+        ["📊 Dashboard", "💬 AI Advisor ᴬᴵ", "🎯 Goal Planner", "❤️ Health Score", "✨ AI Recommendations ᴬᴵ", "⚠️ Risk Predictor", "📄 Reports"]
     )
     
     st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
     st.sidebar.divider()
     
     # Use real Streamlit buttons for logout
-    st.sidebar.markdown("""
+    user_name = st.session_state.get("user_name", "User")
+    initial = user_name[0].upper() if user_name else "U"
+    st.sidebar.markdown(f"""
         <div style="display: flex; align-items: center; gap: 10px;">
-            <div style="background-color: #333; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">U</div>
+            <div style="background-color: #333; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">{initial}</div>
             <div style="line-height: 1.2;">
-                <div style="color: white; font-size: 13px; font-weight: 600;">My Account</div>
+                <div style="color: white; font-size: 13px; font-weight: 600;">{user_name}</div>
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -437,16 +490,28 @@ else:
             pass
         st.session_state.logged_in = False
         st.session_state.access_token = None
-        st.rerun()
+        # Remove token from localStorage and clear URL params
+        components.html("""
+            <script>
+            try {
+                localStorage.removeItem("banknova_token");
+                window.parent.location.href = window.parent.location.origin + window.parent.location.pathname;
+            } catch (e) {
+                console.error("Failed to clear token during logout:", e);
+                window.parent.location.reload();
+            }
+            </script>
+        """, height=0, width=0)
+        st.stop()
     
     # ---------------- DASHBOARD (HOME) ----------------
     if page == "📊 Dashboard":
         # Header Row
         head_col1, head_col2 = st.columns([3, 1])
         with head_col1:
-            st.markdown("""
+            st.markdown(f"""
                 <div style="color: #666; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;">WELCOME BACK</div>
-                <h1 style="color: white; font-size: 2rem; font-weight: 700; margin: 0; line-height: 1;">aaishwaryalala13.</h1>
+                <h1 style="color: white; font-size: 2rem; font-weight: 700; margin: 0; line-height: 1;">{st.session_state.user_name}.</h1>
                 <div style="color: #888; font-size: 13px; margin-top: 6px; margin-bottom: 1.5rem;">Here's your wealth snapshot for today.</div>
             """, unsafe_allow_html=True)
         with head_col2:
@@ -598,8 +663,8 @@ else:
                             <span style="color: white;">Savings</span>
                             <span style="color: #4ade80; font-weight: 600;">100</span>
                         </div>
-                        <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #4ade80; width: 100%; height: 4px; border-radius: 2px;"></div>
+                        <div class="custom-progress-track">
+                            <div class="custom-progress-bar" style="width: 100%; background-color: #4ade80;"></div>
                         </div>
                     </div>
                     <div style="margin-bottom: 12px;">
@@ -607,8 +672,8 @@ else:
                             <span style="color: white;">Investments</span>
                             <span style="color: #ef4444; font-weight: 600;">24</span>
                         </div>
-                        <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #ef4444; width: 24%; height: 4px; border-radius: 2px;"></div>
+                        <div class="custom-progress-track">
+                            <div class="custom-progress-bar" style="width: 24%; background-color: #ef4444;"></div>
                         </div>
                     </div>
                     <div style="margin-bottom: 12px;">
@@ -616,8 +681,8 @@ else:
                             <span style="color: white;">Emergency Fund</span>
                             <span style="color: #f5b03e; font-weight: 600;">46</span>
                         </div>
-                        <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #f5b03e; width: 46%; height: 4px; border-radius: 2px;"></div>
+                        <div class="custom-progress-track">
+                            <div class="custom-progress-bar" style="width: 46%; background-color: #f5b03e;"></div>
                         </div>
                     </div>
                     <div style="margin-bottom: 12px;">
@@ -625,8 +690,8 @@ else:
                             <span style="color: white;">Insurance</span>
                             <span style="color: #ef4444; font-weight: 600;">35</span>
                         </div>
-                        <div style="background-color: #333; height: 4px; border-radius: 2px;">
-                            <div style="background-color: #ef4444; width: 35%; height: 4px; border-radius: 2px;"></div>
+                        <div class="custom-progress-track">
+                            <div class="custom-progress-bar" style="width: 35%; background-color: #ef4444;"></div>
                         </div>
                     </div>
                 </div>
@@ -807,8 +872,8 @@ else:
                         <span style="color: white; font-size: 24px; font-weight: 600;">Rs 42.00L</span>
                         <span style="color: #666; font-size: 12px; margin-left: 6px;">of Rs 3.00Cr</span>
                     </div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;">
-                        <div style="background-color: #f5b03e; width: 14%; height: 100%; border-radius: 2px;"></div>
+                    <div class="custom-progress-track">
+                        <div class="custom-progress-bar" style="width: 14%; background-color: #f5b03e;"></div>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: #666; font-size: 11px;">14% complete</span>
@@ -829,8 +894,8 @@ else:
                         <span style="color: white; font-size: 24px; font-weight: 600;">Rs 9.00L</span>
                         <span style="color: #666; font-size: 12px; margin-left: 6px;">of Rs 80.00L</span>
                     </div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;">
-                        <div style="background-color: #3b82f6; width: 11%; height: 100%; border-radius: 2px;"></div>
+                    <div class="custom-progress-track">
+                        <div class="custom-progress-bar" style="width: 11%; background-color: #3b82f6;"></div>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: #666; font-size: 11px;">11% complete</span>
@@ -854,8 +919,8 @@ else:
                         <span style="color: white; font-size: 24px; font-weight: 600;">Rs 16.50L</span>
                         <span style="color: #666; font-size: 12px; margin-left: 6px;">of Rs 45.00L</span>
                     </div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;">
-                        <div style="background-color: #4ade80; width: 37%; height: 100%; border-radius: 2px;"></div>
+                    <div class="custom-progress-track">
+                        <div class="custom-progress-bar" style="width: 37%; background-color: #4ade80;"></div>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: #666; font-size: 11px;">37% complete</span>
@@ -876,8 +941,8 @@ else:
                         <span style="color: white; font-size: 24px; font-weight: 600;">Rs 2.20L</span>
                         <span style="color: #666; font-size: 12px; margin-left: 6px;">of Rs 8.00L</span>
                     </div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;">
-                        <div style="background-color: #a855f7; width: 28%; height: 100%; border-radius: 2px;"></div>
+                    <div class="custom-progress-track">
+                        <div class="custom-progress-bar" style="width: 28%; background-color: #a855f7;"></div>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: #666; font-size: 11px;">28% complete</span>
@@ -940,8 +1005,8 @@ else:
                                 </div>
                                 <div style="color: #4ade80; font-size: 14px; font-weight: 600;">100</div>
                             </div>
-                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #4ade80; width: 100%; height: 4px; border-radius: 2px;"></div>
+                            <div class="custom-progress-track">
+                                <div class="custom-progress-bar" style="width: 100%; background-color: #4ade80;"></div>
                             </div>
                         </div>
                         <div style="flex: 1;">
@@ -952,8 +1017,8 @@ else:
                                 </div>
                                 <div style="color: #ef4444; font-size: 14px; font-weight: 600;">24</div>
                             </div>
-                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #ef4444; width: 24%; height: 4px; border-radius: 2px;"></div>
+                            <div class="custom-progress-track">
+                                <div class="custom-progress-bar" style="width: 24%; background-color: #ef4444;"></div>
                             </div>
                         </div>
                     </div>
@@ -966,8 +1031,8 @@ else:
                                 </div>
                                 <div style="color: #f5b03e; font-size: 14px; font-weight: 600;">46</div>
                             </div>
-                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #f5b03e; width: 46%; height: 4px; border-radius: 2px;"></div>
+                            <div class="custom-progress-track">
+                                <div class="custom-progress-bar" style="width: 46%; background-color: #f5b03e;"></div>
                             </div>
                         </div>
                         <div style="flex: 1;">
@@ -978,8 +1043,8 @@ else:
                                 </div>
                                 <div style="color: #ef4444; font-size: 14px; font-weight: 600;">35</div>
                             </div>
-                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #ef4444; width: 35%; height: 4px; border-radius: 2px;"></div>
+                            <div class="custom-progress-track">
+                                <div class="custom-progress-bar" style="width: 35%; background-color: #ef4444;"></div>
                             </div>
                         </div>
                     </div>
@@ -992,8 +1057,8 @@ else:
                                 </div>
                                 <div style="color: #f5b03e; font-size: 14px; font-weight: 600;">65</div>
                             </div>
-                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #f5b03e; width: 65%; height: 4px; border-radius: 2px;"></div>
+                            <div class="custom-progress-track">
+                                <div class="custom-progress-bar" style="width: 65%; background-color: #f5b03e;"></div>
                             </div>
                         </div>
                         <div style="flex: 1;">
@@ -1004,8 +1069,8 @@ else:
                                 </div>
                                 <div style="color: #4ade80; font-size: 14px; font-weight: 600;">80</div>
                             </div>
-                            <div style="background-color: #222; height: 4px; border-radius: 2px;">
-                                <div style="background-color: #4ade80; width: 80%; height: 4px; border-radius: 2px;"></div>
+                            <div class="custom-progress-track">
+                                <div class="custom-progress-bar" style="width: 80%; background-color: #4ade80;"></div>
                             </div>
                         </div>
                     </div>
@@ -1106,7 +1171,7 @@ else:
                         <div style="color: #ef4444; font-size: 10px; font-weight: 600; letter-spacing: 1px;">HIGH</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Overspending Risk</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #ef4444; width: 54%; height: 4px; border-radius: 2px;"></div></div>
+                    <div class="custom-progress-track"><div class="custom-progress-bar" style="width: 54%; background-color: #ef4444;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #ef4444; font-size: 12px; font-weight: 600;">54<span style="color: #666;">/100</span></div>
@@ -1119,7 +1184,7 @@ else:
                         <div style="color: #4ade80; font-size: 10px; font-weight: 600; letter-spacing: 1px;">LOW</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Debt Risk</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #4ade80; width: 17%; height: 4px; border-radius: 2px;"></div></div>
+                    <div class="custom-progress-track"><div class="custom-progress-bar" style="width: 17%; background-color: #4ade80;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #4ade80; font-size: 12px; font-weight: 600;">17<span style="color: #666;">/100</span></div>
@@ -1134,7 +1199,7 @@ else:
                         <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px;">MEDIUM</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Emergency Fund Gap</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #f5b03e; width: 54%; height: 4px; border-radius: 2px;"></div></div>
+                    <div class="custom-progress-track"><div class="custom-progress-bar" style="width: 54%; background-color: #f5b03e;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #f5b03e; font-size: 12px; font-weight: 600;">54<span style="color: #666;">/100</span></div>
@@ -1147,7 +1212,7 @@ else:
                         <div style="color: #4ade80; font-size: 10px; font-weight: 600; letter-spacing: 1px;">LOW</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Goal Failure Risk</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #4ade80; width: 35%; height: 4px; border-radius: 2px;"></div></div>
+                    <div class="custom-progress-track"><div class="custom-progress-bar" style="width: 35%; background-color: #4ade80;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #4ade80; font-size: 12px; font-weight: 600;">35<span style="color: #666;">/100</span></div>
@@ -1162,7 +1227,7 @@ else:
                         <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px;">MEDIUM</div>
                     </div>
                     <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 2rem;">Investment Risk</div>
-                    <div style="background-color: #222; height: 4px; border-radius: 2px; margin-bottom: 8px;"><div style="background-color: #f5b03e; width: 50%; height: 4px; border-radius: 2px;"></div></div>
+                    <div class="custom-progress-track"><div class="custom-progress-bar" style="width: 50%; background-color: #f5b03e;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div style="color: #666; font-size: 10px;">Risk score</div>
                         <div style="color: #f5b03e; font-size: 12px; font-weight: 600;">50<span style="color: #666;">/100</span></div>
@@ -1173,20 +1238,81 @@ else:
             </div>
         """, unsafe_allow_html=True)
     elif page == "📄 Reports":
-        st.markdown("""
-            <div style="margin-bottom: 2rem;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div>
-                        <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><span style="font-size: 14px;">📄</span> PORTABLE PORTFOLIO</div>
-                        <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Financial Report</h1>
-                        <div style="color: #888; font-size: 14px;">One-page snapshot of everything BankNova knows about your wealth.</div>
-                    </div>
-                    <div style="display: flex; gap: 12px;">
-                        <button style="background-color: #f5b03e; color: black; border: none; border-radius: 6px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">🖨️ Print / Save PDF</button>
-                        <button style="background-color: transparent; color: white; border: 1px solid #333; border-radius: 6px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">📥 JSON</button>
-                    </div>
+        import json
+        import urllib.parse
+        import datetime
+
+        report_data = {
+            "report_title": "BankNova AI Wealth Intelligence Report",
+            "user": st.session_state.user_name,
+            "email": st.session_state.user_email,
+            "generated_at": datetime.datetime.now().strftime("%Y-%m-%d"),
+            "summary": {
+                "total_wealth": 1380000,
+                "savings": 350000,
+                "investments": 850000,
+                "emergency_fund": 180000,
+                "monthly_income": 120000,
+                "monthly_expenses": 65000,
+                "monthly_savings": 55000,
+                "savings_rate": "45.8%"
+            },
+            "financial_health_score": {
+                "score": 64,
+                "rating": "Good",
+                "pillars": {
+                    "savings": 100,
+                    "investments": 24,
+                    "emergency_fund": 46,
+                    "insurance": 35,
+                    "debt": 65,
+                    "budgeting": 100,
+                    "credit_behaviour": 80
+                }
+            }
+        }
+        json_str = json.dumps(report_data, indent=2)
+        encoded_json = urllib.parse.quote(json_str)
+
+        head_col1, head_col2 = st.columns([3, 1])
+        with head_col1:
+            st.markdown("""
+                <div style="margin-bottom: 2rem;">
+                    <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><span style="font-size: 14px;">📄</span> PORTABLE PORTFOLIO</div>
+                    <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 8px 0; padding: 0;">Financial Report</h1>
+                    <div style="color: #888; font-size: 14px;">One-page snapshot of everything BankNova knows about your wealth.</div>
                 </div>
-            </div>
+            """, unsafe_allow_html=True)
+        with head_col2:
+            st.write("<div style='height: 25px;'></div>", unsafe_allow_html=True) # visual spacer
+            btn_col1, btn_col2 = st.columns(2)
+            with btn_col1:
+                from pdf_generator import generate_pdf_report
+                try:
+                    pdf_bytes = bytes(generate_pdf_report(report_data))
+                except Exception as e:
+                    pdf_bytes = b""
+                    st.error(f"Failed to generate PDF: {e}")
+                
+                st.download_button(
+                    label="🖨️ PDF",
+                    data=pdf_bytes,
+                    file_name="banknova_report.pdf",
+                    mime="application/pdf",
+                    use_container_width=True,
+                    help="Download report as a PDF file"
+                )
+            with btn_col2:
+                st.download_button(
+                    label="📥 JSON",
+                    data=json_str,
+                    file_name="banknova_report.json",
+                    mime="application/json",
+                    use_container_width=True,
+                    help="Download report data in JSON format"
+                )
+
+        report_html = """
             <div style="background-color: #141416; border: 1px solid #2a2a2a; border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; border-bottom: 1px solid #2a2a2a; padding-bottom: 2rem;">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -1198,9 +1324,9 @@ else:
                     </div>
                     <div style="text-align: right; line-height: 1.5;">
                         <div style="color: #666; font-size: 10px;">Generated for</div>
-                        <div style="color: white; font-size: 12px; font-weight: 600;">aaishwaryalala13</div>
-                        <div style="color: #888; font-size: 12px;">aaishwaryalala13@gmail.com</div>
-                        <div style="color: #888; font-size: 12px;">5/7/2026, 7:47:36 pm</div>
+                        <div style="color: white; font-size: 12px; font-weight: 600;">{user_name}</div>
+                        <div style="color: #888; font-size: 12px;">{user_email}</div>
+                        <div style="color: #888; font-size: 12px;">{date_str}</div>
                     </div>
                 </div>
                 <div style="color: #f5b03e; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 1.5rem;">WEALTH SUMMARY</div>
@@ -1257,7 +1383,7 @@ else:
                     </div>
                     <div style="flex: 1; border-bottom: 1px solid #2a2a2a; padding-bottom: 1rem;">
                         <div style="color: #666; font-size: 11px; margin-bottom: 4px;">Insurance</div>
-                        <div style="color: #ef4444; font-size: 14px; font-weight: 600;">35/100</div>
+                        <div style="color: #ef4444; font-weight: 600;">35/100</div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 1rem; margin-bottom: 3rem;">
@@ -1277,7 +1403,14 @@ else:
                 </div>
                 <div style="color: #666; font-size: 10px; line-height: 1.5; font-style: italic;">Disclaimer: This report is generated for educational purposes only and does not constitute licensed investment advice. All computations use user-provided data and standard financial models. Consult a SEBI-registered advisor for personalized recommendations.</div>
             </div>
-        """, unsafe_allow_html=True)
+        """
+        report_html = report_html.replace("{encoded_json}", encoded_json)
+        report_html = report_html.replace("{user_name}", st.session_state.user_name)
+        report_html = report_html.replace("{user_email}", st.session_state.user_email)
+        
+        current_time = datetime.datetime.now().strftime("%d/%m/%Y, %I:%M:%S %p")
+        report_html = report_html.replace("{date_str}", current_time)
+        st.markdown(report_html, unsafe_allow_html=True)
     else:
         st.header(f"Page: {page}")
         st.info("This section is under construction.")
