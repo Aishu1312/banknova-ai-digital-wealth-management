@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, Depends, HTTPException, status, Request, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -241,26 +244,24 @@ class RefreshTokenReq(BaseModel):
 
 @app.post("/auth/register")
 @limiter.limit("5/minute")
-def register(request: Request, user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
+def register(request: Request, user: UserCreate, db: Session = Depends(database.get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed_password = auth_utils.get_password_hash(user.password)
-    verification_token = secrets.token_urlsafe(32)
 
     new_user = models.User(
         name=user.name,
         email=user.email,
         hashed_password=hashed_password,
-        verification_token=verification_token
+        is_verified=True
     )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
-    background_tasks.add_task(auth_utils.send_verification_email, user.email, verification_token)
-    return {"message": "User created successfully. Please verify your email."}
+    return {"message": "User created successfully. You can now log in."}
 
 
 @app.post("/auth/login")
@@ -280,9 +281,6 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db
         db.commit()
         raise HTTPException(status_code=400, detail="Incorrect password. Please try again.")
 
-    if not user.is_verified:
-        raise HTTPException(status_code=400, detail="Please verify your email before logging in.")
-
     # Successful login
     user.failed_login_attempts = 0
     user.locked_until = None
@@ -290,17 +288,21 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db
     access_token = auth_utils.create_access_token(data={"sub": user.email})
     refresh_token = auth_utils.create_refresh_token(data={"sub": user.email})
 
+    # Clear existing refresh tokens for the user to avoid duplication/bloat
+    db.query(models.RefreshToken).filter(models.RefreshToken.user_id == user.id).delete()
+
     # Store refresh token
     db_refresh = models.RefreshToken(user_id=user.id, token=refresh_token, expires_at=datetime.datetime.utcnow() + datetime.timedelta(days=7))
     db.add(db_refresh)
     db.commit()
 
     response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    is_prod = os.environ.get("ENVIRONMENT", "development") == "production"
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=True,
+        secure=is_prod,
         samesite="lax",
         max_age=7 * 24 * 60 * 60
     )
@@ -466,11 +468,12 @@ async def auth_callback(provider: str, request: Request, db: Session = Depends(d
         db.commit()
 
         response = RedirectResponse(url=f"{FRONTEND_URL}/?token={access_token}")
+        is_prod = os.environ.get("ENVIRONMENT", "development") == "production"
         response.set_cookie(
             key="refresh_token",
             value=refresh_token,
             httponly=True,
-            secure=True,
+            secure=is_prod,
             samesite="lax",
             max_age=7 * 24 * 60 * 60
         )

@@ -186,8 +186,9 @@ def render():
         st.markdown('<div class="auth-subtitle">Sign in to your BankNova AI account</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
         
-        email = st.text_input("Email", placeholder="you@example.com", key="login_email")
-        password = st.text_input("Password", type="password", key="login_pass")
+        st.info("💡 **Demo Credentials**: Email: `demo@banknova.ai` | Password: `Password123!`")
+        email = st.text_input("Email", value="demo@banknova.ai", placeholder="you@example.com", key="login_email")
+        password = st.text_input("Password", value="Password123!", type="password", key="login_pass")
         
         col1, col2 = st.columns([1, 1])
         with col1:
@@ -227,13 +228,6 @@ def render():
                     except Exception as e:
                         st.error("Network Error: Please check your internet connection.")
                         
-        st.markdown('<div class="separator">OR CONTINUE WITH</div>', unsafe_allow_html=True)
-        
-        if st.button("Continue with Google", type="secondary", use_container_width=True):
-            trigger_oauth("google")
-        if st.session_state.get("loading_google"):
-            st.info("Redirecting to Google...")
-        
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("Don't have an account? Sign up", type="tertiary"):
             st.session_state.auth_mode = "signup"
@@ -276,7 +270,7 @@ def render():
                         session = get_api_session()
                         res = session.post(f"{API_URL}/register", json={"name": name, "email": email, "password": password}, timeout=5)
                         if res.status_code == 200:
-                            st.toast("Account created successfully! Please check your email.", icon="✅")
+                            st.toast("Account created successfully! You can now log in.", icon="✅")
                             st.session_state.auth_mode = "login"
                             st.rerun()
                         else:

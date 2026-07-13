@@ -10,7 +10,7 @@ class User(Base):
     name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    is_verified = Column(Boolean, default=False)
+    is_verified = Column(Boolean, default=True)
     verification_token = Column(String, nullable=True)
     failed_login_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime, nullable=True)

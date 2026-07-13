@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
@@ -329,6 +332,8 @@ else:
     if "user_id" not in st.session_state:
         try:
             session = auth_ui.get_api_session()
+            if "access_token" in st.session_state and st.session_state.access_token:
+                session.headers.update({"Authorization": f"Bearer {st.session_state.access_token}"})
             me_res = session.get(f"{API_BASE_URL}/auth/me", timeout=5)
             if me_res.status_code == 200:
                 st.session_state.user_id = me_res.json()["id"]

@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import datetime
 from database import engine, Base, SessionLocal
 import models
@@ -14,10 +17,26 @@ def seed():
     db.query(models.RiskAllocation).delete()
     db.query(models.Suggestion).delete()
     db.query(models.Notification).delete()
+    db.query(models.User).delete()
+
+    # Create default demo user
+    import auth_utils
+    hashed_password = auth_utils.get_password_hash("Password123!")
+    demo_user = models.User(
+        name="Demo User",
+        email="demo@banknova.ai",
+        hashed_password=hashed_password,
+        is_verified=True
+    )
+    db.add(demo_user)
+    db.commit()
+    db.refresh(demo_user)
+    demo_user_id = demo_user.id
 
     # Seed Portfolio Holdings
     for h in data.portfolio_holdings:
         db.add(models.PortfolioHolding(
+            user_id=demo_user_id,
             name=h["name"],
             value=h["value"],
             change=h["change"]
@@ -28,6 +47,7 @@ def seed():
         # Convert string date to date object
         dt = datetime.datetime.strptime(t["date"], "%Y-%m-%d").date()
         db.add(models.Transaction(
+            user_id=demo_user_id,
             date=dt,
             merchant=t["merchant"],
             category=t["category"],
@@ -38,6 +58,7 @@ def seed():
     for g in data.goals:
         db.add(models.Goal(
             id=g["id"],
+            user_id=demo_user_id,
             name=g["name"],
             type=g["type"],
             target=g["target"],
@@ -70,6 +91,7 @@ def seed():
     # Seed Notifications
     for n in data.notifications:
         db.add(models.Notification(
+            user_id=demo_user_id,
             title=n["title"],
             body=n["body"],
             time=n["time"],
@@ -79,6 +101,10 @@ def seed():
     db.commit()
     db.close()
     print("Database seeded successfully!")
+    print("Demo User credentials:")
+    print("  Email:    demo@banknova.ai")
+    print("  Password: Password123!")
+
 
 if __name__ == "__main__":
     seed()

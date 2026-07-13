@@ -49,8 +49,14 @@ def get_smtp_config():
 def send_email(to_email: str, subject: str, html_body: str):
     config = get_smtp_config()
     
-    # Fallback for local development if no SMTP config is provided
-    if not config["server"] or not config["user"]:
+    # Fallback for local development if no SMTP config is provided or placeholders are used
+    is_placeholder = (
+        not config["server"] or 
+        not config["user"] or 
+        "example.com" in config["server"] or 
+        "your-smtp" in config["user"]
+    )
+    if is_placeholder:
         print("\n" + "="*50)
         print(f"[DEVELOPMENT MODE] Email to: {to_email}")
         print(f"Subject: {subject}")
